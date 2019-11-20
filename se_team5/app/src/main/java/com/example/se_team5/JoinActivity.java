@@ -34,21 +34,25 @@ public class JoinActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                if ((password.getText().toString()).equals(pwCheck.getText().toString())) {
 
-                JSONObject postData = new JSONObject();
-                try {
-                    postData.put("username",username.getText().toString());
-                    postData.put("nickname",nickname.getText().toString());
-                    postData.put("password", password.getText().toString());
-                    postData.put("password_confirm",pwCheck.getText().toString());
+                    JSONObject postData = new JSONObject();
+                    try {
+                        postData.put("username", username.getText().toString());
+                        postData.put("nickname", nickname.getText().toString());
+                        postData.put("password", password.getText().toString());
+                        postData.put("password_confirm", pwCheck.getText().toString());
 
-                    new sendSignUpInfo(JoinActivity.this).execute("/user/signup", postData.toString());
+                        new sendSignUpInfo(JoinActivity.this).execute("http://81756318.ngrok.io/user/signup", postData.toString());
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "비밀번호가 맞지 않습니다", Toast.LENGTH_SHORT).show();
                 }
             }
-
         });
 
     }
@@ -80,6 +84,7 @@ public class JoinActivity extends AppCompatActivity {
                 wr.flush();
                 wr.close();
 
+
                 // response 성공여부
                 response_code = httpURLConnection.getResponseCode();
 
@@ -105,11 +110,7 @@ public class JoinActivity extends AppCompatActivity {
                 Toast.makeText(activity, "회원가입이 완료되었습니다", Toast.LENGTH_SHORT).show();
                 activity.finish();
             }
-            else if(response_code == HttpURLConnection.HTTP_BAD_REQUEST){
-                Toast.makeText(activity, "비밀번호가 맞지 않습니다", Toast.LENGTH_SHORT).show();
-
-            }
-            else if(response_code == HttpURLConnection.HTTP_NOT_FOUND){
+            else if(response_code == HttpURLConnection.HTTP_NOT_ACCEPTABLE){
                 Toast.makeText(activity, "이미 사용중인 ID입니다", Toast.LENGTH_SHORT).show();
 
             }

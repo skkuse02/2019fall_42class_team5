@@ -47,7 +47,7 @@ public class JoinLoginActivity extends AppCompatActivity {
                     postData.put("username",username.getText().toString());
                     postData.put("password", password.getText().toString());
 
-                    new sendLoginInfo(JoinLoginActivity.this).execute("/user/login", postData.toString());
+                    new sendLoginInfo(JoinLoginActivity.this).execute("http://81756318.ngrok.io", postData.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -115,7 +115,6 @@ public class JoinLoginActivity extends AppCompatActivity {
 
             JoinLoginActivity activity = activityReference.get();
             if (activity == null || activity.isFinishing()) return;
-
             if(!success){
                 Toast.makeText(activity, "등록되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
             }
