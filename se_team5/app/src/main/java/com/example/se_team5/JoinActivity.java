@@ -33,17 +33,23 @@ public class JoinActivity extends AppCompatActivity {
         SignUpButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                String _username = username.getText().toString();
+                String _nickname = nickname.getText().toString();
+                String _password = password.getText().toString();
+                String _pwCheck = pwCheck.getText().toString();
 
-                if ((password.getText().toString()).equals(pwCheck.getText().toString())) {
+                // password 확인 체크
+                if ((_password).equals(_pwCheck)) {
+                    // 입력 값 없는 것 처리
+                    if(_username.length()==0 || _nickname.length()==0 || _password.length()==0) return;
 
                     JSONObject postData = new JSONObject();
                     try {
                         postData.put("username", username.getText().toString());
                         postData.put("nickname", nickname.getText().toString());
                         postData.put("password", password.getText().toString());
-                        postData.put("password_confirm", pwCheck.getText().toString());
 
-                        new sendSignUpInfo(JoinActivity.this).execute("http://81756318.ngrok.io/user/signup", postData.toString());
+                        new sendSignUpInfo(JoinActivity.this).execute("http://41a495db.ngrok.io/user/signup", postData.toString());
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -113,6 +119,9 @@ public class JoinActivity extends AppCompatActivity {
             else if(response_code == HttpURLConnection.HTTP_NOT_ACCEPTABLE){
                 Toast.makeText(activity, "이미 사용중인 ID입니다", Toast.LENGTH_SHORT).show();
 
+            }
+            else{
+                Toast.makeText(activity, "HTTP: "+response_code.toString(),Toast.LENGTH_SHORT).show();
             }
 
         }

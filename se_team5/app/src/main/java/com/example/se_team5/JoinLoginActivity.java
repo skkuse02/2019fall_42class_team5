@@ -41,13 +41,16 @@ public class JoinLoginActivity extends AppCompatActivity {
                 String name = username.getText().toString();
                 String pw = password.getText().toString();
 
+                // 입력 값 없는 것 처리
+                if(name.length()==0 || pw.length()==0) return;
+                
                 // JSON으로 로그인 데이터 보냄
                 JSONObject postData = new JSONObject();
                 try {
                     postData.put("username",username.getText().toString());
                     postData.put("password", password.getText().toString());
 
-                    new sendLoginInfo(JoinLoginActivity.this).execute("http://81756318.ngrok.io", postData.toString());
+                    new sendLoginInfo(JoinLoginActivity.this).execute("http://41a495db.ngrok.io/user/login", postData.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
