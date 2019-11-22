@@ -70,7 +70,7 @@ public class JoinLoginActivity extends AppCompatActivity {
 
     }
 
-    private static class sendLoginInfo extends AsyncTask<String, Void, Boolean> {
+    private class sendLoginInfo extends AsyncTask<String, Void, Boolean> {
 
         private WeakReference<JoinLoginActivity> activityReference;
 
@@ -120,9 +120,15 @@ public class JoinLoginActivity extends AppCompatActivity {
             if (activity == null || activity.isFinishing()) return;
             if(!success){
                 Toast.makeText(activity, "등록되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
-            }
+            }else toMain();
 
         }
+    }
+
+
+    private void toMain(){
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 }
 
