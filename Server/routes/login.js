@@ -17,18 +17,30 @@ exports.register = function (req, res) {
         "user_password": req.body.password,
         "nickname": req.body.nickname
     }
-
-    connection.query('INSERT INTO user SET ?' , users, function (error, results, fields) {
-        if (error) {
-            console.log("error ocurred", error);
-            res.sendStatus(400);
-        } else {
-            console.log('The solution is: ', results);
-            res.sendStatus(200);
+    // check duplication before register
+    connection.query('SELECT COUNT(*) as dup FROM user WHERE user_id= ?', users.user_id, function (error, results, fields){
+      if (error) {
+        console.log("error ocurred", error);
+        res.sendStatus(400);
+      } else {
+        if(results[0].dup==0){ // if there's no same user_id
+          connection.query('INSERT INTO user SET ?' , users, function (error, results, fields) {
+              if (error) {
+                  console.log("error ocurred", error);
+                  res.sendStatus(400);
+              } else {
+                  console.log('The solution is: ', results);
+                  res.sendStatus(200);
+              }
+          });
         }
+        else { // duplication of user id
+          console.log("Duplication");
+          res.sendStatus(400);
+        }
+      }
     });
 }
-
 
 
 exports.login = function (req, res) {
