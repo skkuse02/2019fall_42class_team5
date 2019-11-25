@@ -69,5 +69,5 @@ exports.login = function (req, res) {
                 res.sendStatus(400);
             }
         }
-    })
+    });
 }
