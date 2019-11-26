@@ -27,6 +27,9 @@ router.get('/', function(req, res) {
 // route to handle user registration
 router.post('/user/signup', login.register);
 router.post('/user/login', login.login);
+router.get('/user/refrigerator', refrigerator.items);
+router.post('/user/refrigerator', refrigerator.add_items);
+router.delete('/user/refrigerator', refrigerator.delete_items);
 
 
 app.use('/', router);
