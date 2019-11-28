@@ -20,11 +20,12 @@ import java.net.URL;
 
 public class JoinLoginActivity extends AppCompatActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
 
         final TextView username = findViewById(R.id.username);
         final TextView password = findViewById(R.id.password);
@@ -43,18 +44,20 @@ public class JoinLoginActivity extends AppCompatActivity {
 
                 // 입력 값 없는 것 처리
                 if(name.length()==0 || pw.length()==0) return;
-                
+
                 // JSON으로 로그인 데이터 보냄
                 JSONObject postData = new JSONObject();
                 try {
                     postData.put("username",username.getText().toString());
                     postData.put("password", password.getText().toString());
 
-                    new sendLoginInfo(JoinLoginActivity.this).execute("http://41a495db.ngrok.io/user/login", postData.toString());
+                    new sendLoginInfo(JoinLoginActivity.this).execute("http://3ba7896a.ngrok.io/user/login", postData.toString());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                username.setText("");
+                password.setText("");
             }
         });
 
@@ -91,6 +94,7 @@ public class JoinLoginActivity extends AppCompatActivity {
 
                 // POST 형식으로 json 데이터 보내기
                 httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setRequestProperty("Content-Type", "application/json");
                 httpURLConnection.setDoOutput(true);
 
                 DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
@@ -120,6 +124,9 @@ public class JoinLoginActivity extends AppCompatActivity {
             if (activity == null || activity.isFinishing()) return;
             if(!success){
                 Toast.makeText(activity, "등록되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(activity, "로그인 성공", Toast.LENGTH_SHORT).show();
             }
 
         }

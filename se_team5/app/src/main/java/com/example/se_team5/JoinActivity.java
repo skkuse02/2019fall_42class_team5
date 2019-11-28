@@ -49,7 +49,7 @@ public class JoinActivity extends AppCompatActivity {
                         postData.put("nickname", nickname.getText().toString());
                         postData.put("password", password.getText().toString());
 
-                        new sendSignUpInfo(JoinActivity.this).execute("http://41a495db.ngrok.io/user/signup", postData.toString());
+                        new sendSignUpInfo(JoinActivity.this).execute("http://3ba7896a.ngrok.io/user/signup", postData.toString());
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -83,6 +83,7 @@ public class JoinActivity extends AppCompatActivity {
 
                 // POST 형식으로 json 데이터 보내기
                 httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setRequestProperty("Content-Type", "application/json");
                 httpURLConnection.setDoOutput(true);
 
                 DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
