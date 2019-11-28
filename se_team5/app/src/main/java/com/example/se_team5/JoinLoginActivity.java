@@ -3,6 +3,7 @@ package com.example.se_team5;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,19 +14,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class JoinLoginActivity extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         final TextView username = findViewById(R.id.username);
         final TextView password = findViewById(R.id.password);
@@ -44,20 +47,22 @@ public class JoinLoginActivity extends AppCompatActivity {
 
                 // 입력 값 없는 것 처리
                 if(name.length()==0 || pw.length()==0) return;
-
+                
                 // JSON으로 로그인 데이터 보냄
                 JSONObject postData = new JSONObject();
                 try {
                     postData.put("username",username.getText().toString());
                     postData.put("password", password.getText().toString());
 
-                    new sendLoginInfo(JoinLoginActivity.this).execute("http://3ba7896a.ngrok.io/user/login", postData.toString());
+                    new sendLoginInfo(JoinLoginActivity.this).execute("http://cc442251.ngrok.io/user/login", postData.toString());
+
+                    // 빈칸으로 바꾸기
+                    username.setText("");
+                    password.setText("");
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                username.setText("");
-                password.setText("");
             }
         });
 
@@ -73,7 +78,7 @@ public class JoinLoginActivity extends AppCompatActivity {
 
     }
 
-    private static class sendLoginInfo extends AsyncTask<String, Void, Boolean> {
+    private static class sendLoginInfo extends AsyncTask<String, Void, JSONObject> {
 
         private WeakReference<JoinLoginActivity> activityReference;
 
@@ -82,9 +87,9 @@ public class JoinLoginActivity extends AppCompatActivity {
             activityReference = new WeakReference<>(context);
         }
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected JSONObject doInBackground(String... params) {
 
-            Boolean success = false;
+            JSONObject response = new JSONObject();
 
             HttpURLConnection httpURLConnection = null;
             try {
@@ -92,10 +97,12 @@ public class JoinLoginActivity extends AppCompatActivity {
                 // server와 연결
                 httpURLConnection = (HttpURLConnection) new URL(params[0]).openConnection();
 
-                // POST 형식으로 json 데이터 보내기
+                // POST 형식으로 json 데이터 보내고 결과 받기
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
                 httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
 
                 DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
                 wr.writeBytes(params[1]);
@@ -103,7 +110,18 @@ public class JoinLoginActivity extends AppCompatActivity {
                 wr.close();
 
                 // response 성공여부
-                success = (httpURLConnection.getResponseCode() == httpURLConnection.HTTP_OK);
+                int status = httpURLConnection.getResponseCode();
+                response.put("status",status);
+                response.put("message","");
+
+                // response body 받기
+                if(status!=200){
+                    InputStream is = httpURLConnection.getErrorStream();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                    String responseMsg = in.readLine();
+                    response.put("message",responseMsg);
+                    in.close();
+                }
 
 
             } catch (Exception e) {
@@ -115,18 +133,27 @@ public class JoinLoginActivity extends AppCompatActivity {
                 }
             }
 
-            return success;
+            return response;
         }
-        protected void onPostExecute(Boolean success) {
-            super.onPostExecute(success);
-
+        protected void onPostExecute(JSONObject response) {
+            super.onPostExecute(response);
             JoinLoginActivity activity = activityReference.get();
             if (activity == null || activity.isFinishing()) return;
-            if(!success){
-                Toast.makeText(activity, "등록되지 않은 사용자입니다.", Toast.LENGTH_SHORT).show();
+
+            try {
+                int status = response.getInt("status");
+                String message = response.getString("message");
+
+                if (status == 200) {
+                    // 로그인 성공 시, 메인 화면 띄우기
+                    Intent intent = new Intent(activity, MainActivity.class);
+                    activity.startActivity(intent);
+                } else {
+                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                }
             }
-            else{
-                Toast.makeText(activity, "로그인 성공", Toast.LENGTH_SHORT).show();
+            catch (JSONException e){
+                Log.e("error",e.getMessage());
             }
 
         }

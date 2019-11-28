@@ -12,7 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -49,7 +52,7 @@ public class JoinActivity extends AppCompatActivity {
                         postData.put("nickname", nickname.getText().toString());
                         postData.put("password", password.getText().toString());
 
-                        new sendSignUpInfo(JoinActivity.this).execute("http://3ba7896a.ngrok.io/user/signup", postData.toString());
+                        new sendSignUpInfo(JoinActivity.this).execute("http://cc442251.ngrok.io/user/signup", postData.toString());
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -62,7 +65,7 @@ public class JoinActivity extends AppCompatActivity {
         });
 
     }
-    private static class sendSignUpInfo extends AsyncTask<String, Void, Integer> {
+    private static class sendSignUpInfo extends AsyncTask<String, Void, JSONObject> {
 
         private WeakReference<JoinActivity> activityReference;
         // only retain a weak reference to the activity
@@ -71,9 +74,9 @@ public class JoinActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Integer doInBackground(String... params) {
+        protected JSONObject doInBackground(String... params) {
 
-            int response_code=404;
+            JSONObject response= new JSONObject();
 
             HttpURLConnection httpURLConnection = null;
             try {
@@ -85,6 +88,7 @@ public class JoinActivity extends AppCompatActivity {
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setRequestProperty("Content-Type", "application/json");
                 httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
 
                 DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
                 wr.writeBytes(params[1]);
@@ -93,7 +97,18 @@ public class JoinActivity extends AppCompatActivity {
 
 
                 // response 성공여부
-                response_code = httpURLConnection.getResponseCode();
+                int status = httpURLConnection.getResponseCode();
+                response.put("status",status);
+                response.put("message","");
+
+                if(status!=200){
+                    InputStream is = httpURLConnection.getErrorStream();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                    String responseMsg = in.readLine();
+                    response.put("message",responseMsg);
+                    in.close();
+                }
+
 
 
             } catch (Exception e) {
@@ -105,24 +120,26 @@ public class JoinActivity extends AppCompatActivity {
                 }
             }
 
-            return response_code;
+            return response;
         }
-        protected void onPostExecute(Integer response_code) {
-            super.onPostExecute(response_code);
+        protected void onPostExecute(JSONObject response) {
+            super.onPostExecute(response);
 
             JoinActivity activity = activityReference.get();
             if (activity == null || activity.isFinishing()) return;
+            try {
+                int status = response.getInt("status");
+                String message = response.getString("message");
 
-            if(response_code == HttpURLConnection.HTTP_OK){
-                Toast.makeText(activity, "회원가입이 완료되었습니다", Toast.LENGTH_SHORT).show();
-                activity.finish();
+                if (status == HttpURLConnection.HTTP_OK) {
+                    Toast.makeText(activity, "회원가입이 완료되었습니다", Toast.LENGTH_SHORT).show();
+                    activity.finish();
+                } else {
+                    Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
+                }
             }
-            else if(response_code == HttpURLConnection.HTTP_NOT_ACCEPTABLE){
-                Toast.makeText(activity, "이미 사용중인 ID입니다", Toast.LENGTH_SHORT).show();
-
-            }
-            else{
-                Toast.makeText(activity, "HTTP: "+response_code.toString(),Toast.LENGTH_SHORT).show();
+            catch (JSONException e){
+                System.out.println(e.getMessage());
             }
 
         }
