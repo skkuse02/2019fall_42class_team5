@@ -1,12 +1,12 @@
 // connect with database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host     : '115.145.239.128',
-  user     : 'seteam5',
-  password : 'se55555',
-  port     : 3306,
-  database : 'seteam5'
-});
+    host     : '115.145.239.128',
+    user     : 'seteam5',
+    password : 'se55555',
+    port     : 3306,
+    database : 'seteam5'
+  });
 
 connection.connect();
 
@@ -21,35 +21,42 @@ exports.items = function (req, res){
       res.sendStatus(400).end();
     }
     else {
-      if(rows.length == 0){
-        console.log("refrigerator is empty");
-        res.sendStatus(400).end();
-      }
       res.sendStatus(200);
 
-      // push user_id info.
-      var itemList = new Array();
-      var user = new Object();
-      user.username = req.body.username;
-      itemList.push(user);
-
-      // push refrigerator info.
+      // get item_id
+      var itemId = new Array();
       for(var i=0; i<rows.length; i++){
-        var item = new Object;
         for(var key in rows[i]) {
-          console.log("key: " + key + ", value: " + rows[i][key]);
           if(key == 'item_id')
-            item.item_id = rows[i][key];
-          if(key == 'count')
-            item.count = rows[i][key];
+            itemId.push(rows[i][key]);
         }
-        itemList.push(item);
       }
-      console.log(itemList);
-      //var jsonData = JSON.stringify(itemList);
-      res.json(itemList);
-    }
-  });
+      // find items' name
+      connection.query('SELECT * FROM items WHERE item_id IN (?)', [itemId], function(error, rows, fields){
+        if(error){
+          console.log("error ocurred", error);
+          res.sendStatus(400).end();
+        }
+        else{
+          //res.sendStatus(200);
+          var itemName = new Array();
+          for(var j=0; j<rows.length; j++){
+            var item = new Object();
+            for(var key in rows[j]){
+              if(key == "item_name1")
+                item.name1 = rows[j][key];
+              if(key == 'item_name2')
+                item.name2 = rows[j][key];
+            }
+            itemName.push(item);
+          }
+          var result = new Object();
+          result.itemlist = itemName;
+          console.log(result);
+          res.json(result);
+        }
+      }); // item name 찾는 query
+  }); // item id 찾는 query
 }
 
 
@@ -73,7 +80,7 @@ exports.add_items = function (req, res){
       res.sendStatus(200);
       }
     }
-  );
+  });
 }
 
 
