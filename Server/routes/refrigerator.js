@@ -31,32 +31,10 @@ exports.items = function (req, res){
             itemId.push(rows[i][key]);
         }
       }
-      // find items' name
-      connection.query('SELECT * FROM items WHERE item_id IN (?)', [itemId], function(error, rows, fields){
-        if(error){
-          console.log("error ocurred", error);
-          res.sendStatus(400).end();
-        }
-        else{
-          //res.sendStatus(200);
-          var itemName = new Array();
-          for(var j=0; j<rows.length; j++){
-            var item = new Object();
-            for(var key in rows[j]){
-              if(key == "item_name1")
-                item.name1 = rows[j][key];
-              if(key == 'item_name2')
-                item.name2 = rows[j][key];
-            }
-            itemName.push(item);
-          }
-          var result = new Object();
-          result.itemlist = itemName;
-          console.log(result);
-          res.json(result);
-        }
-      }); // item name 찾는 query
-  }); // item id 찾는 query
+      var info = new Object();
+      info.items = itemId;
+      res.json(info);
+  });
 }
 
 
