@@ -31,7 +31,10 @@ router.post('/user/login', login.login);
 router.get('/user/refrigerator', refrigerator.items);
 router.post('/user/refrigerator', refrigerator.add_items);
 router.delete('/user/refrigerator', refrigerator.delete_items);
-
+// route to handle recipe operation
+router.get('/recipe/search', recipe.recipe_search);
+router.post('/recipe/recommendation', recipe.recipe_recommendation);
+router.get('/recipe/detail', recipe.recipe_detail);
 
 app.use('/', router);
 app.listen(5000);
