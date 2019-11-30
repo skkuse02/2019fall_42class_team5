@@ -18,7 +18,7 @@ exports.items = function (req, res){
   connection.query('SELECT * FROM refrigerator WHERE user_id = ?', req.body.username, function(error, rows, fields) {
     if(error){
       console.log("error ocurred", error);
-      res.sendStatus(400).end();
+      res.sendStatus(400).send('Database error');
     }
     else {
       res.sendStatus(200);
@@ -51,7 +51,7 @@ exports.add_items = function (req, res){
     console.log(str_query.sql);
     if(error){
       console.log("Error ocurred: ", error);
-      res.sendStatus(400).end();
+      res.sendStatus(400).send('Database error');
     }
     if(rows.affectedRows > 0){
       // 정상적으로 insert
@@ -74,7 +74,7 @@ exports.delete_items = function (req, res){
   connection.query('DELETE FROM refrigerator WHERE (user_id, item_id) IN (?)', [values], function(error, rows, fields) {
     if(error){
       console.log('Error ocurred: ', error);
-      res.sendStatus(400).end();
+      res.sendStatus(400).send('Database error');
     }
     else
       res.sendStatus(200);
