@@ -1,5 +1,7 @@
 var express = require("express");
 var login = require('./routes/login');
+var refrigerator = require('./routes/refrigerator');
+var recipe = require('./routes/recipe');
 var bodyParser = require('body-parser');
 
 

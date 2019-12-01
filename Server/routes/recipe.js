@@ -1,11 +1,11 @@
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host     : '115.145.239.128',
-  user     : 'seteam5',
-  password : 'se55555',
-  port     : 3306,
-  database : 'seteam5'
+    host     : '192.168.35.181',
+    user     : 'seteam5',
+    password : 'se55555',
+    port     : 3306,
+    database : 'seteam5'
   });
 
 connection.connect();
@@ -13,17 +13,17 @@ connection.connect();
 
 //이용자가 레시피를 검색하면, db에서 일치하는 레시피들을 찾아서 대략적인 정보를 어플에 보내준다.
 exports.recipe_search = function (req, res) {
-  var info = new Array();
-  var result = new Object();
+  var info = new Array(); // recipe 정보 목록
+  var result = new Object(); // 보내지는 JSON
 
   connection.query('SELECT * FROM authentic_recipe WHERE category = ?', req.body.keyword, function(error, rows, fields) {
     if(error){
       console.log('error ocurred: ', error);
-      res.sendStatus(400).send('Database error');
+      res.status(400).send('Database error');
     }
     else {
       for(var i=0;i<rows.length;i++){
-        var recipe = new Object();
+        var recipe = new Object(); // 개별 레시피 정보
         for(var key in rows[i]){
           switch(key){
             case "recipe_name" :
@@ -72,7 +72,7 @@ exports.recipe_recommendation = function (req, res) {
   connection.query('SELECT recipe_id FROM authentic_recipe WHERE (item1 in (?) or item2 in (?) or item3 in (?)) and recipe_id NOT IN (SELECT recipe_id FROM authentic_ingredient WHERE item_id in (?)) ORDER BY credit desc', [good, good, good, bad], function( error, rows, fields) {
     if(error){
       console.log("error ocurred: ", error);
-      res.sendStatus(400).send(Database error);
+      res.status(400).send("Database error");
     }
     else {
       var idList = new Array(); // recipe_id list
@@ -88,7 +88,7 @@ exports.recipe_recommendation = function (req, res) {
       connection.query('SELECT * FROM authentic_recipe WHERE recipe_id IN (?)', [idList], function(error, rows, fields) {
         if(error){
           console.log('error ocurred: ', error);
-          res.sendStatus(400).send('Database error');
+          res.status(400).send('Database error');
         }
         else {
           var recipeList = new Array();
@@ -150,7 +150,7 @@ exports.recipe_detail = function (req, res) {
     info.name = recipe_name;
     if(error){
       console.log("error ocurred: ", error);
-      res.sendStatus(400).send('Database error');
+      res.status(400).send('Database error');
     }
     else{
       for(var key in rows[0]){
@@ -163,7 +163,7 @@ exports.recipe_detail = function (req, res) {
       connection.query('SELECT COUNT(*) as credit FROM recipe_credit WHERE recipe_id = ?', recipe_id, function(error, rows, fields) {
         if(error){
           console.log("error ocurred: ", error);
-          res.sendStatus(400);
+          res.status(400).send('Database error');
         }
         else{
           info.like = rows[0]["credit"];

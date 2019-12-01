@@ -1,7 +1,7 @@
 // connect with database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '115.145.239.128',
+    host     : '192.168.35.181',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -34,6 +34,7 @@ exports.items = function (req, res){
       var info = new Object();
       info.items = itemId;
       res.json(info);
+    }
   });
 }
 
@@ -57,8 +58,7 @@ exports.add_items = function (req, res){
       // 정상적으로 insert
       res.sendStatus(200);
       }
-    }
-  });
+    });
 }
 
 
