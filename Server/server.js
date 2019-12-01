@@ -4,10 +4,22 @@ var refrigerator = require('./routes/refrigerator');
 var recipe = require('./routes/recipe');
 var bodyParser = require('body-parser');
 
+var multer = require('multer');
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
+var upload = multer({ storage: storage })
+
 
 var app = express();
 app.use( bodyParser.urlencoded({ extended: true }) );
 app.use( bodyParser.json() );
+app.use('/image', express.static('uploads'));
 
 
 //app.use(function(req, res, next) {
@@ -15,7 +27,6 @@ app.use( bodyParser.json() );
 //    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 //    next();
 //});
-
 
 var router = express.Router();
 
