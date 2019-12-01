@@ -49,6 +49,9 @@ exports.login = function (req, res) {
     var user_id = req.body.username;
     var user_password = req.body.password;
 
+    console.log(user_id);
+    console.log(user_password);
+
 
     connection.query('SELECT * FROM user WHERE user_id = ?', [user_id],
     function( error, rows, fields) {

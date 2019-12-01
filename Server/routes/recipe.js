@@ -16,7 +16,7 @@ exports.recipe_search = function (req, res) {
   var info = new Array(); // recipe 정보 목록
   var result = new Object(); // 보내지는 JSON
 
-  connection.query('SELECT * FROM authentic_recipe WHERE category = ?', req.body.keyword, function(error, rows, fields) {
+  connection.query('SELECT * FROM authentic_recipe WHERE category = ?', req.query.keyword, function(error, rows, fields) {
     if(error){
       console.log('error ocurred: ', error);
       res.status(400).send('Database error');
@@ -47,9 +47,6 @@ exports.recipe_search = function (req, res) {
             case "description" :
               recipe.description = rows[i][key];
               break;
-            case "recipe_id" :
-              var recipe_id = rows[i][key];
-              break;
             default :
               break;
           }
@@ -58,8 +55,7 @@ exports.recipe_search = function (req, res) {
       }
       result.recipe_main = info;
       console.log(result);
-      res.sendStatus(200);
-      res.json(result);
+      res.status(200).json(result);
     }
   });
 }
@@ -128,8 +124,7 @@ exports.recipe_recommendation = function (req, res) {
           }
           result.recipe_main = recipeList;
           console.log(result);
-          res.sendStatus(200);
-          res.json(info);
+          res.status(200).json(info);
         }
       });
     }
@@ -174,7 +169,7 @@ exports.recipe_detail = function (req, res) {
       connection.query('SELECT item_id FROM authentic_ingredient WHERE recipe_id = ?', recipe_id, function(error, rows, fields){
           if(error){
             console.log("error ocurred: ", error);
-            res.sendStatus(400).send('Database error');
+            res.status(400).send('Database error');
           }
           else {
             var itemList = new Array();
@@ -191,7 +186,7 @@ exports.recipe_detail = function (req, res) {
       connection.query('SELECT description, img_src FROM recipe_detail WHERE recipe_id = ? order by procedure_num', recipe_id, function(error, rows, fields){
         if(error){
           console.log("error ocurred: ", error);
-          res.sendStatus(400).send('Database error');
+          res.status(400).send('Database error');
         }
         else {
           var descList = new Array();
@@ -208,8 +203,7 @@ exports.recipe_detail = function (req, res) {
           info.description = descList;
           console.log(info);
 
-          res.sendStatus(200);
-          res.json(info);
+          res.status(200).json(info);
         }
       });
     }

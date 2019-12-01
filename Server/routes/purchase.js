@@ -18,11 +18,9 @@ exports.items = function (req, res){
   connection.query('SELECT * FROM cart WHERE user_id = ?', req.body.username, function(error, rows, fields) {
     if(error){
       console.log("error ocurred", error);
-      res.sendStatus(400).end();
+      res.sendStatus(400);
     }
     else {
-      res.sendStatus(200);
-
       // get item_id
       var itemId = new Array();
       for(var i=0; i<rows.length; i++){
@@ -31,12 +29,10 @@ exports.items = function (req, res){
             itemId.push(rows[i][key]);
         }
       }
-
-      var result = new Object();
-      result.itemlist = itemId;
-      console.log(result);
-      res.json(result);
-
+      var info = new Object();
+      info.itemlist = itemId;
+      console.log(info);
+      res.status(200).json(info);
   }); // item id 찾는 query
 }
 
@@ -54,7 +50,7 @@ exports.add_items = function (req, res){
     console.log(str_query.sql);
     if(error){
       console.log("Error ocurred: ", error);
-      res.sendStatus(400).end();
+      res.sendStatus(400);
     }
     if(rows.affectedRows > 0){
       // 정상적으로 insert
@@ -96,7 +92,7 @@ exports.purchase_items = function (req, res){
   connection.query('DELETE FROM cart WHERE (user_id, item_id) IN (?)', [values], function(error, rows, fields) {
     if(error){
       console.log('Error ocurred: ', error);
-      res.sendStatus(400).end();
+      res.sendStatus(400);
     }
     else
       res.sendStatus(200);
@@ -111,7 +107,7 @@ exports.purchase_items = function (req, res){
     console.log(str_query.sql);
     if(error){
       console.log("Error ocurred: ", error);
-      res.sendStatus(400).end();
+      res.sendStatus(400);
     }
     if(rows.affectedRows > 0){
       // 정상적으로 insert

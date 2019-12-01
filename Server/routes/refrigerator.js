@@ -13,16 +13,13 @@ connection.connect();
 
 // 냉장고 조회
 exports.items = function (req, res){
-  console.log("req", req.body); // user_id
-
-  connection.query('SELECT * FROM refrigerator WHERE user_id = ?', req.body.username, function(error, rows, fields) {
+  console.log(req.query.user_id);
+  connection.query('SELECT * FROM refrigerator WHERE user_id = ?', req.query.user_id, function(error, rows, fields) {
     if(error){
       console.log("error ocurred", error);
-      res.sendStatus(400).send('Database error');
+      res.status(400).send('Database error');
     }
     else {
-      res.sendStatus(200);
-
       // get item_id
       var itemId = new Array();
       for(var i=0; i<rows.length; i++){
@@ -33,7 +30,7 @@ exports.items = function (req, res){
       }
       var info = new Object();
       info.items = itemId;
-      res.json(info);
+      res.status(200).json(info);
     }
   });
 }
@@ -52,7 +49,7 @@ exports.add_items = function (req, res){
     console.log(str_query.sql);
     if(error){
       console.log("Error ocurred: ", error);
-      res.sendStatus(400).send('Database error');
+      res.status(400).send('Database error');
     }
     if(rows.affectedRows > 0){
       // 정상적으로 insert
@@ -74,7 +71,7 @@ exports.delete_items = function (req, res){
   connection.query('DELETE FROM refrigerator WHERE (user_id, item_id) IN (?)', [values], function(error, rows, fields) {
     if(error){
       console.log('Error ocurred: ', error);
-      res.sendStatus(400).send('Database error');
+      res.status(400).send('Database error');
     }
     else
       res.sendStatus(200);
