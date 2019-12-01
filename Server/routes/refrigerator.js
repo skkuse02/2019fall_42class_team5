@@ -1,7 +1,8 @@
 // connect with database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '192.168.35.181',
+    //host     : '192.168.35.181',
+    host     : '192.168.43.236',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -41,8 +42,8 @@ exports.add_items = function (req, res){
   console.log("req", req.body);
 
   var values = new Array();
-  for(var i=0;i<req.body.itemList.length;i++){
-    values.push([req.username, req.itemList[i]]);
+  for(var i=0;i<req.body.items.length;i++){
+    values.push([req.body.username, req.body.items[i]]);
   }
 
   var str_query = connection.query('INSERT INTO refrigerator (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
@@ -64,8 +65,8 @@ exports.delete_items = function (req, res){
   console.log("req", req.body);
 
   var values = new Array();
-  for(var i=0; i<req.body.itemList.length; i++){
-    values.push([req.body.username, req.body.itemList[i]]);
+  for(var i=0; i<req.body.items.length; i++){
+    values.push([req.body.username, req.body.items[i]]);
   }
 
   connection.query('DELETE FROM refrigerator WHERE (user_id, item_id) IN (?)', [values], function(error, rows, fields) {
