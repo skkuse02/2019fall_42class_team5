@@ -1,7 +1,8 @@
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '192.168.35.181',
+    //host     : '192.168.35.181',
+    host     : '192.168.43.236',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -24,6 +25,7 @@ exports.recipe_search = function (req, res) {
     else {
       for(var i=0;i<rows.length;i++){
         var recipe = new Object(); // 개별 레시피 정보
+        var items = new Array();
         for(var key in rows[i]){
           switch(key){
             case "recipe_name" :
@@ -36,13 +38,22 @@ exports.recipe_search = function (req, res) {
               recipe.like = rows[i][key];
               break;
             case "item1" :
-              recipe.item1 = rows[i][key];
+              //console.log(rows[i][key]);
+              if(rows[i][key]) {
+                items.push(rows[i][key]);
+              }
               break;
             case "item2" :
-              recipe.item2 = rows[i][key];
+              //console.log(rows[i][key]);
+              if(rows[i][key]) {
+                items.push(rows[i][key]);
+              }
               break;
             case "item3" :
-              recipe.item3 = rows[i][key];
+              //console.log(rows[i][key]);
+              if(rows[i][key]) {
+                items.push(rows[i][key]);
+              }
               break;
             case "description" :
               recipe.description = rows[i][key];
@@ -50,6 +61,7 @@ exports.recipe_search = function (req, res) {
             default :
               break;
           }
+          recipe.items = items;
         }
         info.push(recipe);
       }
