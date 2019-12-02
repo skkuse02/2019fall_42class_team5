@@ -47,7 +47,7 @@ exports.add_items = function (req, res){
     values.push([req.username, req.itemList[i]]);
   }
 
-  var str_query = connection.query('INSERT INTO cart (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
+  var str_query = connection.query('INSERT IGNORE INTO cart (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
     console.log(str_query.sql);
     if(error){
       console.log("Error ocurred: ", error);

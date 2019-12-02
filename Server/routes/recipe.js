@@ -14,10 +14,10 @@ connection.connect();
 
 //이용자가 레시피를 검색하면, db에서 일치하는 레시피들을 찾아서 대략적인 정보를 어플에 보내준다.
 exports.recipe_search = function (req, res) {
-  var info = new Array(); // recipe 정보 목록
+  var recipeList = new Array(); // recipe 정보 목록
   var result = new Object(); // 보내지는 JSON
 
-  connection.query('SELECT * FROM authentic_recipe WHERE category = ?', req.query.keyword, function(error, rows, fields) {
+  connection.query('SELECT * FROM authentic_recipe WHERE category LIKE '%?%'', req.query.keyword, function(error, rows, fields) {
     if(error){
       console.log('error ocurred: ', error);
       res.status(400).send('Database error');
@@ -28,6 +28,9 @@ exports.recipe_search = function (req, res) {
         var items = new Array();
         for(var key in rows[i]){
           switch(key){
+            case "recipe_id" :
+              recipe.recipe_id = rows[i][key];
+              break;
             case "recipe_name" :
               recipe.recipe_name = rows[i][key];
               break;
@@ -38,19 +41,16 @@ exports.recipe_search = function (req, res) {
               recipe.like = rows[i][key];
               break;
             case "item1" :
-              //console.log(rows[i][key]);
               if(rows[i][key]) {
                 items.push(rows[i][key]);
               }
               break;
             case "item2" :
-              //console.log(rows[i][key]);
               if(rows[i][key]) {
                 items.push(rows[i][key]);
               }
               break;
             case "item3" :
-              //console.log(rows[i][key]);
               if(rows[i][key]) {
                 items.push(rows[i][key]);
               }
@@ -63,9 +63,9 @@ exports.recipe_search = function (req, res) {
           }
           recipe.items = items;
         }
-        info.push(recipe);
+        recipeList.push(recipe);
       }
-      result.recipe_main = info;
+      result.recipe_main = recipeList;
       console.log(result);
       res.status(200).json(result);
     }
@@ -102,8 +102,12 @@ exports.recipe_recommendation = function (req, res) {
           var recipeList = new Array();
           for(var i=0;i<rows.length;i++){
             var recipe = new Object();
+            var items = new Array();
             for(var key in rows[i]){
               switch(key){
+                case "recipe_id" :
+                  recipe.recipe_id = rows[i][key];
+                  break;
                 case "recipe_name" :
                   recipe.recipe_name = rows[i][key];
                   break;
@@ -114,13 +118,19 @@ exports.recipe_recommendation = function (req, res) {
                   recipe.like = rows[i][key];
                   break;
                 case "item1" :
-                  recipe.item1 = rows[i][key];
+                  if(rows[i][key]) {
+                    items.push(rows[i][key]);
+                  }
                   break;
                 case "item2" :
-                  recipe.item2 = rows[i][key];
+                  if(rows[i][key]) {
+                    items.push(rows[i][key]);
+                  }
                   break;
                 case "item3" :
-                  recipe.item3 = rows[i][key];
+                  if(rows[i][key]) {
+                    items.push(rows[i][key]);
+                  }
                   break;
                 case "description" :
                   recipe.description = rows[i][key];
@@ -131,12 +141,13 @@ exports.recipe_recommendation = function (req, res) {
                 default :
                   break;
               }
+              recipe.items = items;
             }
             recipeList.push(recipe);
           }
           result.recipe_main = recipeList;
           console.log(result);
-          res.status(200).json(info);
+          res.status(200).json(result);
         }
       });
     }
@@ -151,7 +162,7 @@ exports.recipe_detail = function (req, res) {
   var recipe_id = new Object();
 
   // get recipe_id
-  connection.query('SELECT recipe_id, main_img_src FROM authentic_recipe WHERE recipe_name = ?', req.body.recipe_name,
+  connection.query('SELECT recipe_id, main_img_src FROM authentic_recipe WHERE recipe_id = ?', req.body.recipe_id,
   function(error, rows, fields) {
     recipe_id = rows[0]["recipe_id"];
     info.name = recipe_name;
