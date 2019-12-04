@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+
+    <LinearLayout
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/signupButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <EditText
+            android:id="@+id/recipe_keyword"
+            android:layout_width="280dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="검색할 레시피를 입력하세요"
+            android:inputType="textPersonName"
+            android:paddingStart="15dp"
+            android:textAlignment="textStart"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="49dp" />
+
+        <Button
+            android:id="@+id/search_button"
+            android:layout_width="81dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="25dp"
+            android:text="검색"
+            tools:layout_editor_absoluteX="319dp"
+            tools:layout_editor_absoluteY="49dp" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/recipe_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recipe_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
