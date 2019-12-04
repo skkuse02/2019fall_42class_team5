@@ -1,8 +1,7 @@
 // connect with database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    //host     : '192.168.35.181',
-    host     : '192.168.43.236',
+    host     : '115.145.239.153',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -46,17 +45,16 @@ exports.add_items = function (req, res){
     values.push([req.body.username, req.body.items[i]]);
   }
 
-  var str_query = connection.query('INSERT INTO refrigerator (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
+  var str_query = connection.query('INSERT IGNORE INTO refrigerator (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
     console.log(str_query.sql);
     if(error){
       console.log("Error ocurred: ", error);
       res.status(400).send('Database error');
     }
-    if(rows.affectedRows > 0){
-      // 정상적으로 insert
+    else {
       res.sendStatus(200);
-      }
-    });
+    }
+  });
 }
 
 
