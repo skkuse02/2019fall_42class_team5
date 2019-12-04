@@ -1,8 +1,7 @@
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    //host     : '192.168.35.181',
-    host     : '192.168.43.236',
+    host     : '115.145.239.153',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -77,6 +76,7 @@ exports.recipe_recommendation = function (req, res) {
   var good = req.body.good;
   var bad = req.body.bad;
   // get recipe_id of recommended recipe
+
   connection.query('SELECT recipe_id FROM authentic_recipe WHERE (item1 in (?) or item2 in (?) or item3 in (?)) and recipe_id NOT IN (SELECT recipe_id FROM authentic_ingredient WHERE item_id in (?)) ORDER BY credit desc', [good, good, good, bad], function( error, rows, fields) {
     if(error){
       console.log("error ocurred: ", error);
@@ -106,8 +106,8 @@ exports.recipe_recommendation = function (req, res) {
             for(var key in rows[i]){
               switch(key){
                 case "recipe_id" :
-                  recipe.recipe_id = rows[i][key];
-                  break;
+                recipe.recipe_id = rows[i][key];
+                break;
                 case "recipe_name" :
                   recipe.recipe_name = rows[i][key];
                   break;
@@ -157,47 +157,26 @@ exports.recipe_recommendation = function (req, res) {
 
 //이용자가 한가지 레시피를 선택 했을 떄, 해당 레시피의 디테일한 정보를 전달한다.
 exports.recipe_detail = function (req, res) {
-  //var recipe_name = "매운 닭볶음탕";
-  var info = new Object();
-  var recipe_id = new Object();
-
-  // get recipe_id
-  connection.query('SELECT recipe_id, main_img_src FROM authentic_recipe WHERE recipe_id = ?', req.body.recipe_id,
-  function(error, rows, fields) {
-    recipe_id = rows[0]["recipe_id"];
-    info.name = recipe_name;
+  // get credit
+  connection.query('SELECT COUNT(*) as credit FROM recipe_credit WHERE recipe_id = ?', req.query.recipe_id, function(error, rows, fields) {
+    var info = new Object();
     if(error){
       console.log("error ocurred: ", error);
       res.status(400).send('Database error');
     }
     else{
-      for(var key in rows[0]){
-        if(key == "main_img_src")
-          info.mainImage = rows[0][key];
-      }
-      console.log("recipe_id = " + recipe_id);
-
-      // get credit
-      connection.query('SELECT COUNT(*) as credit FROM recipe_credit WHERE recipe_id = ?', recipe_id, function(error, rows, fields) {
-        if(error){
-          console.log("error ocurred: ", error);
-          res.status(400).send('Database error');
-        }
-        else{
-          info.like = rows[0]["credit"];
-        }
-      });
+      info.like = rows[0]["credit"];
 
       // get ingredients
-      connection.query('SELECT item_id FROM authentic_ingredient WHERE recipe_id = ?', recipe_id, function(error, rows, fields){
+      connection.query('SELECT item_id FROM authentic_ingredient WHERE recipe_id = ?', req.query.recipe_id, function(error, rows, fields){
           if(error){
             console.log("error ocurred: ", error);
             res.status(400).send('Database error');
           }
           else {
             var itemList = new Array();
-            var item = new Object();
             for(var i=0;i<rows.length;i++){
+              var item = new Object();
               item.item_id = rows[i]["item_id"];
               itemList.push(item);
             }
@@ -206,20 +185,21 @@ exports.recipe_detail = function (req, res) {
       });
 
       // get description
-      connection.query('SELECT description, img_src FROM recipe_detail WHERE recipe_id = ? order by procedure_num', recipe_id, function(error, rows, fields){
+      connection.query('SELECT description, img_src FROM recipe_detail WHERE recipe_id = ? order by procedure_num', req.query.recipe_id, function(error, rows, fields){
         if(error){
           console.log("error ocurred: ", error);
           res.status(400).send('Database error');
         }
         else {
           var descList = new Array();
+          for(var j=0;j<rows.length;j++){
           var desc = new Object();
-          for(var i=0;i<rows.length;i++){
-            for(var key in rows[i]){
+            for(var key in rows[j]){
+              //console.log(rows[i][key]);
               if(key == "description")
-                desc.description = rows[i][key];
+                desc.description = rows[j][key];
               if(key == "img_src")
-                desc.image = rows[i][key];
+                desc.image = rows[j][key];
             }
             descList.push(desc);
           }
@@ -228,7 +208,7 @@ exports.recipe_detail = function (req, res) {
 
           res.status(200).json(info);
         }
-      });
+      }); // end of get description
     }
   });
 }
