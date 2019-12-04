@@ -81,7 +81,7 @@ public class RecipeInfoAdapter extends RecyclerView.Adapter {
             items.setText(sb.toString());
 
             // 이미지 로드
-            Picasso.with(context).load(MyGlobal.getData()+"/image/"+recipeinfo.imagepath).into(mealImage);
+            Picasso.get().load(MyGlobal.getData()+"/image/"+recipeinfo.imagepath).into(mealImage);
 
 
         }

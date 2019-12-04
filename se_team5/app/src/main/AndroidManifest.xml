@@ -22,6 +22,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".JoinActivity"></activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".PutActivity"></activity>
+        <activity android:name=".RecommendActivity"></activity>
     </application>
 
 </manifest>

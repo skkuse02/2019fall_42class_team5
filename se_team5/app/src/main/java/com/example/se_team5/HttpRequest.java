@@ -68,6 +68,57 @@ public class HttpRequest {
         return response;
     }
 
+    public String sendDelete(String url, String params) {
+
+        String response = null;
+        HttpURLConnection httpURLConnection = null;
+        try {
+            // server와 연결
+            httpURLConnection = (HttpURLConnection) new URL(server+url).openConnection();
+
+            // POST 형식으로 json 데이터 보내기
+            httpURLConnection.setRequestMethod("DELETE");
+            httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+            httpURLConnection.setRequestProperty("Accept", "application/json");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
+            wr.writeBytes(params);
+            wr.flush();
+            wr.close();
+
+            InputStream _is;
+            if (httpURLConnection.getResponseCode() < HttpURLConnection.HTTP_BAD_REQUEST) {
+                _is = httpURLConnection.getInputStream();
+            } else {
+                /* error from server */
+                _is = httpURLConnection.getErrorStream();
+            }
+
+            // 서버로부터 데이터 읽기
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(_is, "UTF-8"));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            br.close();
+
+            // response code 입력
+            int status = httpURLConnection.getResponseCode();
+
+            response = status + sb.toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (httpURLConnection != null) httpURLConnection.disconnect();
+        }
+        return response;
+    }
+
     public String sendGet(String url, String params) {
         String response = "";
         HttpURLConnection httpURLConnection = null;

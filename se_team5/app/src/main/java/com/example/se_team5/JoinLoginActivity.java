@@ -17,6 +17,8 @@ import java.lang.ref.WeakReference;
 
 public class JoinLoginActivity extends AppCompatActivity {
 
+    private String user_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +36,7 @@ public class JoinLoginActivity extends AppCompatActivity {
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+/*
                 String name = username.getText().toString();
                 String pw = password.getText().toString();
 
@@ -47,6 +49,8 @@ public class JoinLoginActivity extends AppCompatActivity {
                     postData.put("username", username.getText().toString());
                     postData.put("password", password.getText().toString());
 
+                    user_id = username.getText().toString();
+
                     new sendLoginInfo(JoinLoginActivity.this).execute("/user/login", postData.toString());
 
                     // 빈칸으로 바꾸기
@@ -56,6 +60,11 @@ public class JoinLoginActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+ */
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("username", "hj323");
+                startActivity(intent);
             }
         });
 
@@ -71,7 +80,7 @@ public class JoinLoginActivity extends AppCompatActivity {
 
     }
 
-    private static class sendLoginInfo extends AsyncTask<String, Void, String> {
+    private class sendLoginInfo extends AsyncTask<String, Void, String> {
 
         private WeakReference<JoinLoginActivity> activityReference;
 
@@ -95,6 +104,7 @@ public class JoinLoginActivity extends AppCompatActivity {
             if (response.substring(0,3).equals("200")) {
                 // 로그인 성공 시, 메인 화면 띄우기
                 Intent intent = new Intent(activity, MainActivity.class);
+                intent.putExtra("username", user_id);
                 activity.startActivity(intent);
             } else {
                 Toast.makeText(activity, response.substring(3), Toast.LENGTH_SHORT).show();

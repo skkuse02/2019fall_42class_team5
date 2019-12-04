@@ -67,7 +67,7 @@ public class StepAdapter extends RecyclerView.Adapter {
             description.setText(step.description);
 
             // 이미지 로드
-            Picasso.with(context).load(MyGlobal.getData()+"/image/"+step.imagepath).into(image);
+            Picasso.get().load(MyGlobal.getData()+"/image/"+step.imagepath).into(image);
 
 
         }
