@@ -1,7 +1,7 @@
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '115.145.239.153',
+    host     : '115.145.240.151',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -16,7 +16,7 @@ exports.recipe_search = function (req, res) {
   var recipeList = new Array(); // recipe 정보 목록
   var result = new Object(); // 보내지는 JSON
 
-  connection.query('SELECT * FROM authentic_recipe WHERE category LIKE '%?%'', req.query.keyword, function(error, rows, fields) {
+  connection.query('SELECT * FROM authentic_recipe WHERE category LIKE ?', ["%" + req.query.keyword + "%"], function(error, rows, fields) {
     if(error){
       console.log('error ocurred: ', error);
       res.status(400).send('Database error');
@@ -176,9 +176,7 @@ exports.recipe_detail = function (req, res) {
           else {
             var itemList = new Array();
             for(var i=0;i<rows.length;i++){
-              var item = new Object();
-              item.item_id = rows[i]["item_id"];
-              itemList.push(item);
+              itemList.push(rows[i]["item_id"]);
             }
             info.items = itemList;
           }
@@ -195,7 +193,6 @@ exports.recipe_detail = function (req, res) {
           for(var j=0;j<rows.length;j++){
           var desc = new Object();
             for(var key in rows[j]){
-              //console.log(rows[i][key]);
               if(key == "description")
                 desc.description = rows[j][key];
               if(key == "img_src")
@@ -203,7 +200,7 @@ exports.recipe_detail = function (req, res) {
             }
             descList.push(desc);
           }
-          info.description = descList;
+          info.steps = descList;
           console.log(info);
 
           res.status(200).json(info);
