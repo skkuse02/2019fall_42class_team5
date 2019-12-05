@@ -36,14 +36,14 @@ public class ItemListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.listview_item, parent, false);
         }
 
-        ImageView iconImageView = (ImageView) convertView.findViewById(R.id.imageView1) ;
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.textView1) ;
+        ImageView iconImageView = convertView.findViewById(R.id.imageView1) ;
+        TextView titleTextView = convertView.findViewById(R.id.textView1) ;
 
 
         Item listViewItem = myBasketList.get(position);
 
         iconImageView.setImageResource(listViewItem.getImageResourceID());
-        titleTextView.setText(listViewItem.getName1());
+        titleTextView.setText(listViewItem.getName());
 
         return convertView;
     }
