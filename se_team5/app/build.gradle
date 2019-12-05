@@ -18,6 +18,10 @@ android {
         }
     }
 }
+repositories {
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -32,4 +36,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.1.0'
     implementation 'androidx.navigation:navigation-ui:2.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.android.support:recyclerview-v7:29.0.0'
+    implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
+
 }
