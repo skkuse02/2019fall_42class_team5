@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.se_team5">
     <!-- for networking -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:usesCleartextTraffic="true"
@@ -26,6 +26,6 @@
         <activity android:name=".PutActivity"></activity>
         <activity android:name=".RecommendActivity"></activity>
         <activity android:name=".ui.recipe.RecipeDetailedActivity"></activity>
+        <activity android:name=".BrowseActivity"></activity>
     </application>
-
 </manifest>

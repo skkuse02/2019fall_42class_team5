@@ -87,7 +87,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder viewHolder, int position)
     {
         viewHolder.img.setImageResource(myDataList.get(position).getImageResourceID());
-        viewHolder.name.setText(myDataList.get(position).getName1());
+        viewHolder.name.setText(myDataList.get(position).getName());
     }
 
     @Override

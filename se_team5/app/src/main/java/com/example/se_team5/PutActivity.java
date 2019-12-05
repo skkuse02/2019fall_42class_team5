@@ -1,6 +1,7 @@
 package com.example.se_team5;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,11 +31,19 @@ public class PutActivity extends AppCompatActivity {
     private ItemsAdapter myAdapter;
 
     private String user_id;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_put);
+
+        Intent intent = getIntent();
+        if(intent.getExtras().getInt("to")==1){
+            url = "/user/basket";
+        } else if(intent.getExtras().getInt("to")==0){
+            url = "/user/refrigerator";
+        }
 
         SharedPreferences user = getSharedPreferences("user", Context.MODE_PRIVATE);
 
@@ -53,30 +62,31 @@ public class PutActivity extends AppCompatActivity {
         PutButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                JSONObject postData = new JSONObject();
-                try {
-                    postData.put("username", "hj323");
+            JSONObject postData = new JSONObject();
+            try {
+                postData.put("username", "hj323");
 
-                    SparseBooleanArray a = myAdapter.getmSelectedItems();
-                    JSONArray temp = new JSONArray();
-                    for(int i = 0; i < new AllItems().getItemNum(); i++){
-                        if(a.get(i, false))
-                            temp.put(i);
-                    }
-                    postData.put("items", temp);
-                    Log.d("ddddd", String.valueOf(temp));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                SparseBooleanArray a = myAdapter.getmSelectedItems();
+                JSONArray temp = new JSONArray();
+                for(int i = 0; i < new AllItems().getItemNum(); i++){
+                    if(a.get(i, false))
+                        temp.put(i);
                 }
-                //new putItemInRefrigerator(PutActivity.this).execute("/user/refrigerator", "{\"username\":\"hj323\",\"items\":[1,2]}");
+                postData.put("items", temp);
+                Log.d("ddddd", String.valueOf(temp));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            new putItems(PutActivity.this).execute(url, postData.toString());
+            //new getRefrigeratorItemList().execute("/user/refrigerator", "?username=hj323");
             }
         });
     }
 
-    private static class putItemInRefrigerator extends AsyncTask<String, Void, String> {
+    private static class putItems extends AsyncTask<String, Void, String> {
 
         private WeakReference<PutActivity> activityReference;
-        putItemInRefrigerator(PutActivity context) {
+        putItems(PutActivity context) {
             activityReference = new WeakReference<>(context);
         }
 
@@ -111,11 +121,38 @@ public class PutActivity extends AppCompatActivity {
 
             if (response.substring(0,3).equals("200")) {
                 // 성공 시, 메인 화면 띄우기
-                Toast.makeText(activity, "냉장고에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "추가되었습니다.", Toast.LENGTH_SHORT).show();
                 activity.finish();
             } else {
                 Toast.makeText(activity, "오류: "+response.substring(0,3), Toast.LENGTH_SHORT).show();
             }
         }
     }
+/*
+    private class getRefrigeratorItemList extends AsyncTask<String, Void, String> {
+
+        getRefrigeratorItemList() { }
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpRequest req = new HttpRequest(MyGlobal.getData());
+            return req.sendGet(params[0], params[1]);
+        }
+
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+
+            if(response==null) return;
+
+            if (response.substring(0,3).equals("200")) {
+
+            } else {
+
+            }
+            //Toast.makeText(response.substring(3),Toast.LENGTH_SHORT).show();
+            ITEM_LIST = jsonParsing(response.substring(3));
+            myAdapter = new ItemsAdapter(ITEM_LIST);
+            recyclerView.setAdapter(myAdapter);
+        }
+    }*/
 }

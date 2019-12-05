@@ -22,7 +22,15 @@
 
 
     <Button
+        android:id="@+id/deleteBasketButton"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="구매"></Button>
+        android:text="삭제"></Button>
+
+    <Button
+        android:id="@+id/BuyItemButton"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="담기"></Button>
+
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.example.se_team5;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +9,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,9 +23,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        Intent intent = getIntent();
+        JSONObject gson = new JSONObject();
+        JSONArray temp = new JSONArray();
+//        try {
+//            gson.put("items",temp);
+//            new SharedPreferenceActivity().savePreferences("userFile","username", gson.toString());
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
-        user_id = intent.getExtras().getString("username");
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_refrigerator, R.id.navigation_recipe, R.id.navigation_basket)

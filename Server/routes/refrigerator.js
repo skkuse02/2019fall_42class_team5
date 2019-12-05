@@ -1,7 +1,7 @@
 // connect with database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '115.145.239.153',
+    host     : '115.145.240.151',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -13,8 +13,8 @@ connection.connect();
 
 // 냉장고 조회
 exports.items = function (req, res){
-  console.log(req.query.user_id);
-  connection.query('SELECT * FROM refrigerator WHERE user_id = ?', req.query.user_id, function(error, rows, fields) {
+  console.log(req.query.username);
+  connection.query('SELECT * FROM refrigerator WHERE user_id = ?', req.query.username, function(error, rows, fields) {
     if(error){
       console.log("error ocurred", error);
       res.status(400).send('Database error');

@@ -10,13 +10,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.ref.WeakReference;
 
 public class JoinLoginActivity extends AppCompatActivity {
 
+    private SharedPreferenceActivity sp = new SharedPreferenceActivity();
     private String user_id;
 
     @Override
@@ -62,8 +60,9 @@ public class JoinLoginActivity extends AppCompatActivity {
                 }
 
  */
+//                new SharedPreferenceActivity().savePreferences("userFile","username", "hj323");
+
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("username", "hj323");
                 startActivity(intent);
             }
         });
