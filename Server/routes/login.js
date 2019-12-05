@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '115.145.240.151',
+    host     : '192.168.0.79',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -20,22 +20,22 @@ exports.register = function (req, res) {
     connection.query('SELECT COUNT(*) as dup FROM user WHERE user_id= ?', users.user_id, function (error, results, fields){
       if (error) {
         console.log("error ocurred", error);
-        res.status(400).send('Database error');
+        res.status(400).send('Database error').end();
       } else {
         if(results[0].dup==0){ // if there's no same user_id
           connection.query('INSERT INTO user SET ?' , users, function (error, results, fields) {
               if (error) {
                   console.log("error ocurred", error);
-                  res.sendStatus(400);
+                  res.sendStatus(400).end();
               } else {
                   console.log('The solution is: ', results);
-                  res.sendStatus(200);
+                  res.sendStatus(200).end();
               }
           });
         }
         else { // duplication of user id
           console.log("Duplication");
-          res.status(400).send('해당하는 아이디가 이미 존재합니다');
+          res.status(400).send('해당하는 아이디가 이미 존재합니다').end();
         }
       }
     });
@@ -57,17 +57,17 @@ exports.login = function (req, res) {
     function( error, rows, fields) {
         if (error) {
             console.log("error ocurred", error);
-            res.status(400).send('Database error');
+            res.status(400).send('Database error').end();
         } else {
             console.log('The solution is: ', rows);
             if(rows.length > 0) {
               if(rows[0].user_password == user_password) {
-                  res.sendStatus(200);
+                  res.sendStatus(200).end();
               } else {
-                  res.status(400).send('잘못된 비밀번호입니다');
+                  res.status(400).send('잘못된 비밀번호입니다').end();
               }
           } else {
-              res.status(400).send('존재하지 않는 아이디입니다');
+              res.status(400).send('존재하지 않는 아이디입니다').end();
           }
       }
     });
