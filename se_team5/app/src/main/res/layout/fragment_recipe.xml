@@ -10,8 +10,7 @@
     <LinearLayout
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/signupButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,21 +20,22 @@
 
         <EditText
             android:id="@+id/recipe_keyword"
-            android:layout_width="280dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="25dp"
-            android:layout_weight="1"
+            android:layout_width="210dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="80dp"
             android:ems="10"
             android:hint="검색할 레시피를 입력하세요"
             android:inputType="textPersonName"
             android:paddingStart="15dp"
             android:textAlignment="textStart"
+            android:textSize="16sp"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="49dp" />
 
         <Button
             android:id="@+id/search_button"
-            android:layout_width="81dp"
+            android:layout_width="60dp"
             android:layout_height="50dp"
             android:layout_marginEnd="25dp"
             android:text="검색"
@@ -49,9 +49,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.4"
@@ -63,6 +63,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical" />
+
+        <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+            android:id="@+id/shimmer_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shimmer_demo_angle="20"
+            app:shimmer_demo_child_count="10"
+            app:shimmer_demo_grid_child_count="1"
+            app:shimmer_demo_layout="@layout/layout_demo_grid"
+            app:shimmer_demo_layout_manager_type="grid" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

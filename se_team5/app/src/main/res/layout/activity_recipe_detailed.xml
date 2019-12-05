@@ -1,33 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="15sp"
+    android:layout_marginRight="15sp">
 
-    <TextView
-        android:id="@+id/recipe_title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="15sp"
-        android:layout_marginTop="15sp"
-        android:layout_marginRight="15sp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textSize="18sp"
-        android:textStyle="bold|italic" />
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/detail_image"
-        android:layout_width="match_parent"
-        android:layout_height="210sp"
-        android:layout_margin="15sp"
-        tools:srcCompat="@tools:sample/avatars[14]" />
+        <TextView
+            android:id="@+id/recipe_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="20sp"
+            android:gravity="center"
+            android:text="TextView"
+            android:textSize="25sp"
+            android:textStyle="bold|italic" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/step_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/detail_image"
+            android:layout_width="match_parent"
+            android:layout_height="250sp"
+            android:layout_marginTop="20sp"
+            android:layout_marginBottom="20sp"
+            android:scaleType="fitXY"
+            tools:srcCompat="@tools:sample/avatars[14]" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/line2"
+            android:layout_width="match_parent"
+            android:layout_height="1sp"
+            android:background="#1D000000" />
+
+        <TextView
+            android:id="@+id/ITEM_LIST"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10sp"
+            android:paddingTop="10sp"
+            android:singleLine="false"
+            android:text="필요한 재료"
+            android:textSize="18sp"
+            android:textStyle="normal|bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10sp">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/STEP_LIST"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="10sp"
+            android:paddingTop="10sp"
+            android:text="조리 순서"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/step_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30sp" />
+
+        <TextView
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1sp"
+            android:background="#1D000000" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="30sp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="4sp"
+            android:text="추천하기" />
+
+        <Button
+            android:id="@+id/like_button"
+            android:layout_width="60sp"
+            android:layout_height="60sp"
+            android:layout_gravity="center"
+            android:background="@drawable/roundedbutton"
+            android:backgroundTint="#FFD180"
+            android:hapticFeedbackEnabled="false"
+            android:text="👍"
+            android:textIsSelectable="false"
+            android:theme="@style/Widget.AppCompat.Button" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="80sp" />
+
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
