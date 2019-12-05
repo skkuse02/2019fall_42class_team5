@@ -1,6 +1,7 @@
 package com.example.se_team5;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,7 @@ import java.lang.ref.WeakReference;
 
 public class JoinLoginActivity extends AppCompatActivity {
 
+    private SharedPreferenceActivity sp = new SharedPreferenceActivity();
     private String user_id;
 
     @Override
@@ -62,8 +64,9 @@ public class JoinLoginActivity extends AppCompatActivity {
                 }
 
  */
+                new SharedPreferenceActivity().savePreferences("userFile","username", "hj323");
+
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("username", "hj323");
                 startActivity(intent);
             }
         });

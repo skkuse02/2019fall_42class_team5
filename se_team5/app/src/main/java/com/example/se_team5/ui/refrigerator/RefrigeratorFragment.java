@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,16 +51,16 @@ public class RefrigeratorFragment extends Fragment{
         Button removeButton = root.findViewById(R.id.removeButton);
         Button recommendButton = root.findViewById(R.id.recommendButton);
 
-        SharedPreferences user = this.getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        user_id = sp.getString("username","");
+        SharedPreferences.Editor editor = sp.edit();
 
-        user_id = user.getString("user","");
-        Log.d("user", user_id);
 
         recyclerView = root.findViewById(R.id.removeRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(getActivity(), 5);
         recyclerView.setLayoutManager(manager); // LayoutManager 등록
 
-        new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?user_id=hj323");
+        new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username="+user_id);
         //myAdapter = new ItemsAdapter(ITEM_LIST);//new AllItems().getAllItem()
         //recyclerView.setAdapter(myAdapter);  // Adapter 등록
 
@@ -69,10 +70,10 @@ public class RefrigeratorFragment extends Fragment{
             public void onClick(View v) {
 
                 Intent intent = new Intent(getActivity().getApplicationContext(), PutActivity.class);
+                intent.putExtra("to", 0);
                 startActivity(intent);
+                new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username=hj323");
 
-
-//                new putItemInRefrigerator(RefrigeratorFragment.this).execute("/user/refrigerator", "{\"username\":\"hj323\",\"items\":[1,2]}");
             }
         });
 
@@ -81,26 +82,32 @@ public class RefrigeratorFragment extends Fragment{
             @Override
             public void onClick(View v) {
 
-                // JSON으로 로그인 데이터 보냄
-                JSONObject postData = new JSONObject();
-                JSONArray arr = new JSONArray();
 
-                try {
+                    SparseBooleanArray a = myAdapter.getmSelectedItems();
+                if(a.size()>0){
+                    JSONObject postData = new JSONObject();
+                    JSONArray temp = new JSONArray();
+                    try {
 
-                    for (Item i : SELECTED_ITEMS){
-                        arr.put(i.getId());
+                        postData.put("username", "hj323");
+
+                        for(int i = 0; i < ITEM_LIST.size(); i++){
+                            if(a.get(i, false))
+                                temp.put(ITEM_LIST.get(i).getId());
+                        }
+
+                        postData.put("items", temp);
+                        //Log.i("Dd", String.valueOf(postData));
+                        new removeItemInRefrigerator(RefrigeratorFragment.this).execute("/user/refrigerator", postData.toString());
+                        new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username=hj323");
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                    postData.put("items", arr);
-                    //Log.i("Dd", String.valueOf(postData));
-                    new removeItemInRefrigerator(RefrigeratorFragment.this).execute("/user/refrigerator", "{\"username\":\"hj323\",\"items\":[1,2]}");
-                    new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?user_id=hj323");
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
             }
+
         });
 
 
@@ -109,6 +116,7 @@ public class RefrigeratorFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), RecommendActivity.class);
+                //intent.putExtra("itemlist", )
                 startActivity(intent);
             }
         });
@@ -144,7 +152,7 @@ public class RefrigeratorFragment extends Fragment{
             }
             //Toast.makeText(response.substring(3),Toast.LENGTH_SHORT).show();
             ITEM_LIST = jsonParsing(response.substring(3));
-            myAdapter = new ItemsAdapter(new AllItems().getAllItem());
+            myAdapter = new ItemsAdapter(ITEM_LIST);
             recyclerView.setAdapter(myAdapter);
         }
     }

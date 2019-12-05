@@ -25,6 +25,7 @@
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".PutActivity"></activity>
         <activity android:name=".RecommendActivity"></activity>
+        <activity android:name=".BrowseActivity"></activity>
     </application>
 
 </manifest>
