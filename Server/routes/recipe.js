@@ -76,6 +76,9 @@ exports.recipe_search = function (req, res) {
 exports.recipe_recommendation = function (req, res) {
   var good = req.body.good;
   var bad = req.body.bad;
+  if(req.body.bad.length == 0){
+   bad = [0];
+  }
   // get recipe_id of recommended recipe
 
   connection.query('SELECT recipe_id FROM authentic_recipe WHERE (item1 in (?) or item2 in (?) or item3 in (?)) and recipe_id NOT IN (SELECT recipe_id FROM authentic_ingredient WHERE item_id in (?)) ORDER BY credit desc', [good, good, good, bad], function( error, rows, fields) {
