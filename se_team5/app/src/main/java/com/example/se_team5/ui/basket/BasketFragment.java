@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
 import static androidx.lifecycle.ViewModelProviders.*;
 
 public class BasketFragment extends Fragment {
@@ -99,14 +100,24 @@ public class BasketFragment extends Fragment {
             if(response==null) return;
 
             if (response.substring(0,3).equals("200")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.substring(3));
+                    SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("userBasket", jsonObject.toString());
+                    editor.commit();
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
+                ITEM_LIST = jsonParsing(pref.getString("userBasket",""));
+                adapter = new ItemListViewAdapter(ITEM_LIST);
+                listview.setAdapter(adapter);
             } else {
-
+                return;
             }
-            //Toast.makeText(response.substring(3),Toast.LENGTH_SHORT).show();
-            ITEM_LIST = jsonParsing(response.substring(3));
-            adapter = new ItemListViewAdapter(ITEM_LIST);
-            listview.setAdapter(adapter);
         }
     }
 

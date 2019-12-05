@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.se_team5.item.AllItems;
+import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemsAdapter;
 
 import org.json.JSONArray;
@@ -24,11 +24,13 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 
 public class PutActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private ItemsAdapter myAdapter;
+    private ArrayList<Item> AllItems_;
 
     private String user_id;
     private String url;
@@ -38,6 +40,10 @@ public class PutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_put);
 
+        SharedPreferences sp = getSharedPreferences("userFile", MODE_PRIVATE);
+        AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
+        user_id = sp.getString("username", "");
+
         Intent intent = getIntent();
         if(intent.getExtras().getInt("to")==1){
             url = "/user/basket";
@@ -45,40 +51,43 @@ public class PutActivity extends AppCompatActivity {
             url = "/user/refrigerator";
         }
 
-        SharedPreferences user = getSharedPreferences("user", Context.MODE_PRIVATE);
-
-        user_id = user.getString("user","");
-
         Button PutButton = findViewById(R.id.putButton);
-
 
         recyclerView = findViewById(R.id.putRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(this, 5);
         recyclerView.setLayoutManager(manager); // LayoutManager 등록
 
-        myAdapter = new ItemsAdapter(new AllItems().getAllItem());
+        myAdapter = new ItemsAdapter(AllItems_);
         recyclerView.setAdapter(myAdapter);  // Adapter 등록
 
         PutButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-            JSONObject postData = new JSONObject();
-            try {
-                postData.put("username", "hj323");
-
                 SparseBooleanArray a = myAdapter.getmSelectedItems();
-                JSONArray temp = new JSONArray();
-                for(int i = 0; i < new AllItems().getItemNum(); i++){
-                    if(a.get(i, false))
-                        temp.put(i);
+                if(a.size()>0){
+                    JSONObject postData = new JSONObject();
+
+                    try {
+                        postData.put("username", user_id);
+
+                        JSONArray temp = new JSONArray();
+
+                        for(int i = 0; i < AllItems_.size(); i++){
+                            if(a.get(i, false))
+                                temp.put(i);
+                        }
+
+                        postData.put("items", temp);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    new putItems(PutActivity.this).execute(url, postData.toString());
+                    new getRefrigeratorItemList().execute("/user/refrigerator", "?username="+user_id);
                 }
-                postData.put("items", temp);
-                Log.d("ddddd", String.valueOf(temp));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            new putItems(PutActivity.this).execute(url, postData.toString());
-            //new getRefrigeratorItemList().execute("/user/refrigerator", "?username=hj323");
+
+                finish();
             }
         });
     }
@@ -122,15 +131,20 @@ public class PutActivity extends AppCompatActivity {
             if (response.substring(0,3).equals("200")) {
                 // 성공 시, 메인 화면 띄우기
                 Toast.makeText(activity, "추가되었습니다.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.putExtra("result","OK");
+                activity.setResult(2,intent);
                 activity.finish();
             } else {
                 Toast.makeText(activity, "오류: "+response.substring(0,3), Toast.LENGTH_SHORT).show();
             }
         }
     }
-/*
+
+
     private class getRefrigeratorItemList extends AsyncTask<String, Void, String> {
 
+        private WeakReference<JoinActivity> activityReference;
         getRefrigeratorItemList() { }
 
         @Override
@@ -145,14 +159,42 @@ public class PutActivity extends AppCompatActivity {
             if(response==null) return;
 
             if (response.substring(0,3).equals("200")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.substring(3));
+
+                    SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("userRefrigerator", jsonObject.toString());
+                    editor.commit();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                myAdapter = new ItemsAdapter(jsonParsing(pref.getString("userRefrigerator", "")));
+                recyclerView.setAdapter(myAdapter);
 
             } else {
-
+                return;
             }
-            //Toast.makeText(response.substring(3),Toast.LENGTH_SHORT).show();
-            ITEM_LIST = jsonParsing(response.substring(3));
-            myAdapter = new ItemsAdapter(ITEM_LIST);
-            recyclerView.setAdapter(myAdapter);
         }
-    }*/
+    }
+
+    private ArrayList<Item> jsonParsing(String json) {
+        try{
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray ItemArray = jsonObject.getJSONArray("items");
+
+            ArrayList<Item> li = new ArrayList<Item>();
+
+            for(int i=0; i<ItemArray.length(); i++)
+                li.add(AllItems_.get((int)ItemArray.get(i)));
+
+            return li;
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

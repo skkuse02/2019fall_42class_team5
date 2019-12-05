@@ -34,13 +34,17 @@ import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class RefrigeratorFragment extends Fragment{
 
     private static ArrayList<Item> ITEM_LIST = new ArrayList<Item>();
-    private static ArrayList<Item> SELECTED_ITEMS = new ArrayList<Item>();
     private RecyclerView recyclerView;
     private ItemsAdapter myAdapter;
+
+    private int REQUEST_TEST = 1;
 
     private String user_id;
 
@@ -51,18 +55,14 @@ public class RefrigeratorFragment extends Fragment{
         Button removeButton = root.findViewById(R.id.removeButton);
         Button recommendButton = root.findViewById(R.id.recommendButton);
 
-        SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        user_id = sp.getString("username","");
-        SharedPreferences.Editor editor = sp.edit();
-
+        SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
+        user_id = pref.getString("username", "");
 
         recyclerView = root.findViewById(R.id.removeRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(getActivity(), 5);
         recyclerView.setLayoutManager(manager); // LayoutManager 등록
 
         new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username="+user_id);
-        //myAdapter = new ItemsAdapter(ITEM_LIST);//new AllItems().getAllItem()
-        //recyclerView.setAdapter(myAdapter);  // Adapter 등록
 
         //put
         putButton.setOnClickListener(new View.OnClickListener(){
@@ -71,9 +71,7 @@ public class RefrigeratorFragment extends Fragment{
 
                 Intent intent = new Intent(getActivity().getApplicationContext(), PutActivity.class);
                 intent.putExtra("to", 0);
-                startActivity(intent);
-                new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username=hj323");
-
+                startActivityForResult(intent, REQUEST_TEST);
             }
         });
 
@@ -89,7 +87,7 @@ public class RefrigeratorFragment extends Fragment{
                     JSONArray temp = new JSONArray();
                     try {
 
-                        postData.put("username", "hj323");
+                        postData.put("username", user_id);
 
                         for(int i = 0; i < ITEM_LIST.size(); i++){
                             if(a.get(i, false))
@@ -97,9 +95,8 @@ public class RefrigeratorFragment extends Fragment{
                         }
 
                         postData.put("items", temp);
-                        //Log.i("Dd", String.valueOf(postData));
                         new removeItemInRefrigerator(RefrigeratorFragment.this).execute("/user/refrigerator", postData.toString());
-                        new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username=hj323");
+                        new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username="+user_id);
 
 
                     } catch (JSONException e) {
@@ -107,7 +104,6 @@ public class RefrigeratorFragment extends Fragment{
                     }
                 }
             }
-
         });
 
 
@@ -116,13 +112,24 @@ public class RefrigeratorFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity().getApplicationContext(), RecommendActivity.class);
-                //intent.putExtra("itemlist", )
                 startActivity(intent);
             }
         });
 
+
+
         return root;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_TEST) {
+            new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username="+user_id);
+        }
+    }
+
 
     private class getRefrigeratorItemList extends AsyncTask<String, Void, String> {
 
@@ -147,13 +154,24 @@ public class RefrigeratorFragment extends Fragment{
 
             if (response.substring(0,3).equals("200")) {
 
-            } else {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.substring(3));
+                    SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("userRefrigerator", jsonObject.toString());
+                    editor.commit();
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
+                ITEM_LIST = jsonParsing(pref.getString("userRefrigerator",""));
+                myAdapter = new ItemsAdapter(ITEM_LIST);
+                recyclerView.setAdapter(myAdapter);
+            } else {
+                return;
             }
-            //Toast.makeText(response.substring(3),Toast.LENGTH_SHORT).show();
-            ITEM_LIST = jsonParsing(response.substring(3));
-            myAdapter = new ItemsAdapter(ITEM_LIST);
-            recyclerView.setAdapter(myAdapter);
         }
     }
 
@@ -200,49 +218,6 @@ public class RefrigeratorFragment extends Fragment{
                 //Toast.makeText(activity, "냉장고에 추가되었습니다.", Toast.LENGTH_SHORT).show();
             } else {
                 //Toast.makeText(activity, "오류: " + response.substring(0,3), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private static class putItemInRefrigerator extends AsyncTask<String, Void, String> {
-
-        private WeakReference<RefrigeratorFragment> activityReference;
-        putItemInRefrigerator(RefrigeratorFragment context) {
-            activityReference = new WeakReference<>(context);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            String response;
-
-            HttpURLConnection httpURLConnection = null;
-            try {
-                HttpRequest req = new HttpRequest(MyGlobal.getData());
-                return req.sendPost(params[0], params[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                // server와의 connection 해제
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-            }
-
-            return null;
-
-        }
-        protected void onPostExecute(String response) {
-            super.onPostExecute(response);
-
-            RefrigeratorFragment activity = activityReference.get();
-
-            if (activity == null) return;
-
-            if(response == null){
-                //
-            }else{
-                //
             }
         }
     }

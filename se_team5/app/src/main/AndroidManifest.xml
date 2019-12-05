@@ -27,5 +27,6 @@
         <activity android:name=".RecommendActivity"></activity>
         <activity android:name=".ui.recipe.RecipeDetailedActivity"></activity>
         <activity android:name=".BrowseActivity"></activity>
+        <activity android:name=".SharedPreferenceActivity"></activity>
     </application>
 </manifest>

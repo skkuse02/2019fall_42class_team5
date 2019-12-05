@@ -32,10 +32,10 @@ public class SharedPreferenceActivity extends Activity {
         editor.commit();
     }
 
-    public void removePreferences(){
-        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+    public void removePreferences(String file, String key){
+        SharedPreferences pref = getSharedPreferences(file, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.remove("hi");
+        editor.remove(key);
         editor.commit();
     }
 

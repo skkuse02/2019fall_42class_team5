@@ -1,6 +1,7 @@
 package com.example.se_team5;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -10,11 +11,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.ref.WeakReference;
 
 public class JoinLoginActivity extends AppCompatActivity {
 
-    private SharedPreferenceActivity sp = new SharedPreferenceActivity();
     private String user_id;
 
     @Override
@@ -60,7 +63,10 @@ public class JoinLoginActivity extends AppCompatActivity {
                 }
 
  */
-//                new SharedPreferenceActivity().savePreferences("userFile","username", "hj323");
+                SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("username", "hj323");
+                editor.commit();
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
