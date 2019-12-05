@@ -2,7 +2,7 @@ package com.example.se_team5.ui.recipe;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.R;
+import com.example.se_team5.item.ItemHashMap;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -50,18 +51,16 @@ public class RecipeInfoAdapter extends RecyclerView.Adapter {
         private TextView likes;
         private TextView items;
         private TextView description;
-        private Integer recipe_id;
 
         public RecipeViewHolder(View itemView){
             super(itemView);
 
             // view 지정 및 listener 달기
-            mealImage = (ImageView) itemView.findViewById(R.id.main_image);
-            title = (TextView) itemView.findViewById(R.id.title);
-            description = (TextView) itemView.findViewById(R.id.description);
-            likes = (TextView) itemView.findViewById(R.id.likes);
-            items = (TextView) itemView.findViewById(R.id.items);
-
+            mealImage = itemView.findViewById(R.id.main_image);
+            title = itemView.findViewById(R.id.title);
+            description = itemView.findViewById(R.id.description);
+            likes = itemView.findViewById(R.id.likes);
+            items = itemView.findViewById(R.id.items);
             itemView.setOnClickListener(this);
 
         }
@@ -69,33 +68,40 @@ public class RecipeInfoAdapter extends RecyclerView.Adapter {
         // 해당 view의 position에 값 bind
         public void bindView(int position){
             RecipeInfo recipeinfo = recipeList.get(position);
-
-            recipe_id = recipeinfo.recipe_id;
             title.setText(recipeinfo.title);
             likes.setText(recipeinfo.like.toString());
             description.setText(recipeinfo.description);
 
             // items 받기
-            StringBuffer sb = new StringBuffer();
-            for(int i=0;i<recipeinfo.items.size();i++) sb.append(recipeinfo.items.get(i)+" ");
+            ItemHashMap itemHashMap = new ItemHashMap();
+            StringBuilder sb = new StringBuilder();
+            for(int i=0;i<recipeinfo.items.size();i++) {
+                sb.append(itemHashMap.itemName(recipeinfo.items.get(i))+" ");
+            }
             items.setText(sb.toString());
 
             // 이미지 로드
             Picasso.get().load(MyGlobal.getData()+"/image/"+recipeinfo.imagepath).into(mealImage);
-
+            // tag 달기
+            itemView.setTag(position);
 
         }
 
         // 리스트 클릭 시 Detailed Recipe로 이동
         @Override
         public void onClick(View v) {
-            // open할 activity
+            // tag로 클릭된 view 찾기
+            Integer pos = (Integer)v.getTag();
+            RecipeInfo thisRecipe = recipeList.get(pos);
+
+            // 불러올 activity 생성
             Intent toRecipe = new Intent(context, RecipeDetailedActivity.class);
 
-            // main image, title, id 정보 넘기기
-            toRecipe.putExtra("image",((BitmapDrawable)mealImage.getDrawable()).getBitmap());
-            toRecipe.putExtra("title",title.getText());
-            toRecipe.putExtra("recipe_id",recipe_id);
+            // main image uri, title, id 정보 넘기기
+            toRecipe.putExtra("imagepath",thisRecipe.imagepath);
+            Log.i("path",thisRecipe.imagepath);
+            toRecipe.putExtra("title",thisRecipe.title);
+            toRecipe.putExtra("recipe_id",thisRecipe.recipe_id);
 
             // activity 시작
             context.startActivity(toRecipe);

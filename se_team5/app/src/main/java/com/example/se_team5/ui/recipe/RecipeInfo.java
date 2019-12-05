@@ -13,7 +13,7 @@ public class RecipeInfo {
     public Integer recipe_id;
     public String title;
     public String imagepath;
-    public List<String> items;
+    public List<Integer> items;
     public Integer like;
     public String description;
 
@@ -25,7 +25,7 @@ public class RecipeInfo {
 
             items = new ArrayList<>();
             JSONArray _items = recipe.getJSONArray("items");
-            for(int i=0;i<_items.length();i++) items.add(_items.getString(i));
+            for(int i=0;i<_items.length();i++) items.add(_items.getInt(i));
 
             description = recipe.getString("description");
             imagepath = recipe.getString("mainImage");

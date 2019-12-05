@@ -14,21 +14,21 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 import com.example.se_team5.HttpRequest;
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.R;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeFragment extends Fragment {
-
     private List<RecipeInfo> recipe_list = new ArrayList<>(); // recipe list
     private RecipeInfoAdapter recipeInfoAdapter;
+    private ShimmerRecyclerView shimmerRecycler;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // recipe view 띄우기 - frame을 view로 변환
@@ -50,20 +50,27 @@ public class RecipeFragment extends Fragment {
         recyclerView.setAdapter(recipeInfoAdapter);
         recipeInfoAdapter.notifyDataSetChanged();
 
+        shimmerRecycler = view.findViewById(R.id.shimmer_recycler_view);
+        shimmerRecycler.hideShimmerAdapter();
+
 
         // search button 누른 경우
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 검색 할 키워드가 있다면 검색 요청 보내기
+
                 String search_keyword = recipe_keyword.getText().toString();
                 if (search_keyword.length() == 0) return;
-
                 // list 초기화
                 recipe_list.clear();
+                recipeInfoAdapter.notifyDataSetChanged();
 
+                shimmerRecycler.showShimmerAdapter();
                 // search_keyword를 보내서 'recipe_main' json list 받아온다.
+
                 new searchRecipe().execute("/recipe/search", "?keyword="+search_keyword);
+
 
             }
         });
@@ -72,9 +79,7 @@ public class RecipeFragment extends Fragment {
     }
 
     private class searchRecipe extends AsyncTask<String, Void, String> {
-
         HttpRequest req = new HttpRequest(MyGlobal.getData());
-
         @Override
         protected String doInBackground(String... params) {
             return req.sendGet(params[0], params[1]);
@@ -84,6 +89,7 @@ public class RecipeFragment extends Fragment {
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
             try {
+
                 if(response.equals("")) return;
                 if (response.substring(0, 3).equals("200")) {
                     JSONObject jObject = new JSONObject(response.substring(3));
@@ -97,11 +103,14 @@ public class RecipeFragment extends Fragment {
                         recipe_list.add(new RecipeInfo(recipe));
 
                     }
+
                     recipeInfoAdapter.notifyDataSetChanged();
+                    shimmerRecycler.hideShimmerAdapter();
                 }
 
-            } catch (JSONException e) {
-                Log.e("Error", "JSONException");
+            } catch (Exception e) {
+                Log.e("Error", "Exception");
+                e.printStackTrace();
             }
         }
     }
