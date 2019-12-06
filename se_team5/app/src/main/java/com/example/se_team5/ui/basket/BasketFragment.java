@@ -51,7 +51,7 @@ public class BasketFragment extends Fragment {
         AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         user_id = sp.getString("username","");
 
-        listview = (ListView) root.findViewById(R.id.list_item);
+        listview = root.findViewById(R.id.list_item);
 
         new getBasketItemList().execute("/user/basket", "?username="+user_id);
 

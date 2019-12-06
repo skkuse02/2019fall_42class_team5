@@ -39,11 +39,11 @@ public class BrowseActivity extends AppCompatActivity {
         AllItems_ = Item.gsonParsing(pref.getString("allItems",""));
         ITEM_LIST = jsonParsing(pref.getString("userBasket",""));
 
-        listview = (ListView) findViewById(R.id.memo);
+        listview = findViewById(R.id.memo);
         adapter = new ItemListViewAdapter(ITEM_LIST, this) ;
         listview.setAdapter(adapter);
 
-        mWebView = (WebView) findViewById(R.id.webView);
+        mWebView = findViewById(R.id.webView);
 
         mWebView.setWebViewClient(new WebViewClient());
         mWebSettings = mWebView.getSettings();

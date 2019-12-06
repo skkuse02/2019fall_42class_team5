@@ -26,8 +26,7 @@ import jxl.read.biff.BiffException;
 
 public class MainActivity extends AppCompatActivity {
 
-    public String user_id;
-    private final List<String> names = new ArrayList<>();
+    List<String> names = new ArrayList<>();
     private final List<Integer> images = new ArrayList<>();
 
     @Override
@@ -36,55 +35,57 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
-        try {
-            // Excel 파일 읽기
-            InputStream inputStream = getBaseContext().getResources().getAssets().open("items.xls");
-            Workbook workbook = Workbook.getWorkbook(inputStream);
+        SharedPreferences check = getSharedPreferences("userFile", MODE_PRIVATE);
+        if(check.getString("allItems",null)!=null){
+            try {
+                // Excel 파일 읽기
+                InputStream inputStream = getBaseContext().getResources().getAssets().open("items.xls");
+                Workbook workbook = Workbook.getWorkbook(inputStream);
 
-            Sheet sheet = workbook.getSheet(0); // 0번째 sheet 읽기
-            int endIdx = sheet.getColumn(1).length - 1;
+                Sheet sheet = workbook.getSheet(0); // 0번째 sheet 읽기
+                int endIdx = sheet.getColumn(1).length - 1;
 
-            // id 0 값 없으므로 채워넣기
-            names.add(null);
-            images.add(0);
+                // id 0 값 없으므로 채워넣기
+                names.add(null);
+                images.add(0);
 
-            for (int i = 1; i <= endIdx; i++) {
-                // 두번째 열(B)
-                String name = sheet.getCell(1, i).getContents();
-                names.add(name);
-                images.add(getResources().getIdentifier("@drawable/"+"item"+i+".png","drawable",this.getPackageName()));
+                for (int i = 1; i <= endIdx; i++) {
+                    // 두번째 열(B)
+                    String name = sheet.getCell(1, i).getContents();
+                    names.add(name);
+                    images.add(getResources().getIdentifier("@drawable/"+"item"+i+".png","drawable",this.getPackageName()));
+                }
+
+            } catch (BiffException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-        } catch (BiffException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
+            SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            try {
+                JSONObject jsonObject = new JSONObject();
+                JSONArray arr = new JSONArray();
 
-        SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        try {
-            JSONObject jsonObject = new JSONObject();
-            JSONArray arr = new JSONArray();
+                for (int i = 1; i < names.size(); i++) {
+                    JSONObject temp = new JSONObject();
+                    temp.put("name", names.get(i));
+                    temp.put("image", images.get(i));
+                    arr.put(temp);
 
-            for (int i = 1; i < names.size(); i++) {
-                JSONObject temp = new JSONObject();
-                temp.put("name", names.get(i));
-                temp.put("image", images.get(i));
-                arr.put(temp);
+                }
 
+                jsonObject.put("items", arr);
+                Log.d("name", jsonObject.toString());
+                editor.putString("allItems", jsonObject.toString());
+                editor.commit();
+
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            jsonObject.put("items", arr);
-            Log.d("name", jsonObject.toString());
-            editor.putString("allItems", jsonObject.toString());
-            editor.commit();
-
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_refrigerator, R.id.navigation_recipe, R.id.navigation_basket)

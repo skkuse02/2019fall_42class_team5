@@ -1,2 +1,2 @@
-include ':app', ':jxl'
+include ':app'
 rootProject.name='se_team5'

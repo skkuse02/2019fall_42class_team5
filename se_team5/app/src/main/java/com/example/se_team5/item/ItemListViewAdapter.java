@@ -2,7 +2,6 @@ package com.example.se_team5.item;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -70,7 +68,7 @@ public class ItemListViewAdapter extends BaseAdapter {
         iconImageView.setImageResource(listViewItem.getImageResourceID());
         titleTextView.setText(listViewItem.getName());
 
-        Button deleteBasketButton = (Button) convertView.findViewById(R.id.deleteBasketButton);
+        Button deleteBasketButton = convertView.findViewById(R.id.deleteBasketButton);
         deleteBasketButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
@@ -94,7 +92,7 @@ public class ItemListViewAdapter extends BaseAdapter {
             }
         });
 
-        Button buyItemButton = (Button) convertView.findViewById(R.id.BuyItemButton);
+        Button buyItemButton = convertView.findViewById(R.id.BuyItemButton);
         buyItemButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
