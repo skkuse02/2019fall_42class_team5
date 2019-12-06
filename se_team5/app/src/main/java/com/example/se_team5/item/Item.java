@@ -1,7 +1,5 @@
 package com.example.se_team5.item;
 
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +38,7 @@ public class Item {
             JSONObject jsonObject = new JSONObject(gson);
             JSONArray ItemArray = jsonObject.getJSONArray("items");
 
-            for(int i=0; i<ItemArray.length(); i++){
+            for(int i=1; i<ItemArray.length(); i++){
                 JSONObject temp = ItemArray.getJSONObject(i);
                 itemList.add(new Item(temp.getString("name"), temp.getInt("image"), temp.getInt("id")));
             }
