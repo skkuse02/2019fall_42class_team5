@@ -47,7 +47,7 @@ public class HttpRequest {
 
             // 서버로부터 데이터 읽기
             StringBuilder sb = new StringBuilder();
-            BufferedReader br = new BufferedReader(new InputStreamReader(_is, "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(_is, StandardCharsets.UTF_8));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -98,7 +98,7 @@ public class HttpRequest {
 
             // 서버로부터 데이터 읽기
             StringBuilder sb = new StringBuilder();
-            BufferedReader br = new BufferedReader(new InputStreamReader(_is, "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(_is, StandardCharsets.UTF_8));
             String line;
 
             while ((line = br.readLine()) != null) {

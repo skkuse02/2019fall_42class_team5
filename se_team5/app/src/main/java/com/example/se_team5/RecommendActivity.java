@@ -1,5 +1,7 @@
 package com.example.se_team5;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,7 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.se_team5.item.AllItems;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.RecommendItemsAdapter;
 
@@ -29,23 +30,27 @@ public class RecommendActivity extends AppCompatActivity {
     private static ArrayList<Item> SELECTED_ITEMS2 = new ArrayList<Item>();
     private RecyclerView recyclerView;
     private RecommendItemsAdapter myAdapter;
+    private ArrayList<Item> AllItems_;
 
     private String user_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_put);
+        setContentView(R.layout.activity_recommend);
 
-        Button PutButton = findViewById(R.id.putButton);
+        SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
 
-        recyclerView = findViewById(R.id.putRecyclerView);
+        Button recommendButton = findViewById(R.id.recommendButton);
+
+        recyclerView = findViewById(R.id.recommendRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(this, 5);
         recyclerView.setLayoutManager(manager); // LayoutManager 등록
 
-        myAdapter = new RecommendItemsAdapter(new AllItems().getAllItem());
+        myAdapter = new RecommendItemsAdapter(AllItems_);
         recyclerView.setAdapter(myAdapter);  // Adapter 등록
-        PutButton.setOnClickListener(new View.OnClickListener(){
+        recommendButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 JSONObject postData = new JSONObject();
@@ -54,7 +59,7 @@ public class RecommendActivity extends AppCompatActivity {
 
                     SparseBooleanArray a = myAdapter.getmSelectedItems1();
                     JSONArray temp = new JSONArray();
-                    for(int i = 0; i < new AllItems().getItemNum(); i++){
+                    for(int i = 0; i < AllItems_.size(); i++){
                         if(a.get(i, false))
                             temp.put(i);
                     }
@@ -63,7 +68,7 @@ public class RecommendActivity extends AppCompatActivity {
 
                     a = myAdapter.getmSelectedItems2();
                     temp = new JSONArray();
-                    for(int i = 0; i < new AllItems().getItemNum(); i++){
+                    for(int i = 0; i < AllItems_.size(); i++){
                         if(a.get(i, false))
                             temp.put(i);
                     }

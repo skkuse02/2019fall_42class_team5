@@ -34,6 +34,7 @@ public class PutActivity extends AppCompatActivity {
 
     private String user_id;
     private String url;
+    private int to;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +44,7 @@ public class PutActivity extends AppCompatActivity {
         SharedPreferences sp = getSharedPreferences("userFile", MODE_PRIVATE);
         AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         user_id = sp.getString("username", "");
+
 
         Intent intent = getIntent();
         if(intent.getExtras().getInt("to")==1){
@@ -84,7 +86,16 @@ public class PutActivity extends AppCompatActivity {
 
 
                     new putItems(PutActivity.this).execute(url, postData.toString());
-                    new getRefrigeratorItemList().execute("/user/refrigerator", "?username="+user_id);
+
+
+                    Intent intent = getIntent();
+                    to = intent.getExtras().getInt("to");
+                    if(to==1){
+                        new getBasketItemList().execute("/user/basket", "?username="+user_id);
+                    } else if(to==0){
+                        new getRefrigeratorItemList().execute("/user/refrigerator", "?username="+user_id);
+                    }
+
                 }
 
                 finish();
@@ -92,7 +103,7 @@ public class PutActivity extends AppCompatActivity {
         });
     }
 
-    private static class putItems extends AsyncTask<String, Void, String> {
+    private class putItems extends AsyncTask<String, Void, String> {
 
         private WeakReference<PutActivity> activityReference;
         putItems(PutActivity context) {
@@ -129,12 +140,19 @@ public class PutActivity extends AppCompatActivity {
             if(response == null) return;
 
             if (response.substring(0,3).equals("200")) {
-                // 성공 시, 메인 화면 띄우기
-                Toast.makeText(activity, "추가되었습니다.", Toast.LENGTH_SHORT).show();
+
+
+
                 Intent intent = new Intent();
+                if(to==1){
+                    Toast.makeText(activity, "장바구니에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                } else if(to==0){
+                    Toast.makeText(activity, "냉장고에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                }
                 intent.putExtra("result","OK");
                 activity.setResult(2,intent);
                 activity.finish();
+
             } else {
                 Toast.makeText(activity, "오류: "+response.substring(0,3), Toast.LENGTH_SHORT).show();
             }
@@ -173,6 +191,45 @@ public class PutActivity extends AppCompatActivity {
 
                 SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
                 myAdapter = new ItemsAdapter(jsonParsing(pref.getString("userRefrigerator", "")));
+                recyclerView.setAdapter(myAdapter);
+
+            } else {
+                return;
+            }
+        }
+    }
+
+    private class getBasketItemList extends AsyncTask<String, Void, String> {
+
+        private WeakReference<JoinActivity> activityReference;
+        getBasketItemList() { }
+
+        @Override
+        protected String doInBackground(String... params) {
+            HttpRequest req = new HttpRequest(MyGlobal.getData());
+            return req.sendGet(params[0], params[1]);
+        }
+
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+
+            if(response==null) return;
+
+            if (response.substring(0,3).equals("200")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.substring(3));
+
+                    SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("userBasket", jsonObject.toString());
+                    editor.commit();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                myAdapter = new ItemsAdapter(jsonParsing(pref.getString("userBasket", "")));
                 recyclerView.setAdapter(myAdapter);
 
             } else {

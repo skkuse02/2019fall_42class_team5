@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -22,7 +23,6 @@ import com.example.se_team5.MyGlobal;
 import com.example.se_team5.PutActivity;
 import com.example.se_team5.R;
 import com.example.se_team5.RecommendActivity;
-import com.example.se_team5.item.AllItems;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemsAdapter;
 
@@ -31,10 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -43,6 +41,8 @@ public class RefrigeratorFragment extends Fragment{
     private static ArrayList<Item> ITEM_LIST = new ArrayList<Item>();
     private RecyclerView recyclerView;
     private ItemsAdapter myAdapter;
+    private ArrayList<Item> AllItems_;
+
 
     private int REQUEST_TEST = 1;
 
@@ -56,6 +56,8 @@ public class RefrigeratorFragment extends Fragment{
         Button recommendButton = root.findViewById(R.id.recommendButton);
 
         SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
+        AllItems_ = Item.gsonParsing(pref.getString("allItems",""));
+
         user_id = pref.getString("username", "");
 
         recyclerView = root.findViewById(R.id.removeRecyclerView);
@@ -92,8 +94,10 @@ public class RefrigeratorFragment extends Fragment{
                         for(int i = 0; i < ITEM_LIST.size(); i++){
                             if(a.get(i, false))
                                 temp.put(ITEM_LIST.get(i).getId());
-                        }
 
+
+                        }
+                        Log.d("itemlist", temp.toString());
                         postData.put("items", temp);
                         new removeItemInRefrigerator(RefrigeratorFragment.this).execute("/user/refrigerator", postData.toString());
                         new getRefrigeratorItemList(RefrigeratorFragment.this).execute("/user/refrigerator", "?username="+user_id);
@@ -175,7 +179,9 @@ public class RefrigeratorFragment extends Fragment{
         }
     }
 
-    private static ArrayList<Item> jsonParsing(String json) {
+    private ArrayList<Item> jsonParsing(String json) {
+        SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         try{
             JSONObject jsonObject = new JSONObject(json);
             JSONArray ItemArray = jsonObject.getJSONArray("items");
@@ -183,7 +189,7 @@ public class RefrigeratorFragment extends Fragment{
             ArrayList<Item> li = new ArrayList<Item>();
 
             for(int i=0; i<ItemArray.length(); i++)
-                li.add(new AllItems().findItem((int)ItemArray.get(i)));
+                li.add(AllItems_.get((int)ItemArray.get(i)));
 
             return li;
         }catch (JSONException e) {
@@ -214,10 +220,10 @@ public class RefrigeratorFragment extends Fragment{
             if(response == null) return;
 
             if (response.substring(0,3).equals("200")) {
-                // 성공 시, 메인 화면 띄우기
-                //Toast.makeText(activity, "냉장고에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(activityReference.get().getActivity(), "냉장고에서 제거되었습니다.", Toast.LENGTH_SHORT).show();
             } else {
-                //Toast.makeText(activity, "오류: " + response.substring(0,3), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activityReference.get().getActivity(), "오류: " + response.substring(0,3), Toast.LENGTH_SHORT).show();
             }
         }
     }

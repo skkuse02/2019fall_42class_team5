@@ -25,7 +25,6 @@ public class JoinLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
         final TextView username = findViewById(R.id.username);
         final TextView password = findViewById(R.id.password);
 
@@ -33,11 +32,30 @@ public class JoinLoginActivity extends AppCompatActivity {
         TextView signupText = findViewById(R.id.signupButton);
 
 
+        SharedPreferences check = getSharedPreferences("userFile", MODE_PRIVATE);
+        String pastID = check.getString("username", "");
+        String pastPW = check.getString("password", "");
+
+        if(pastID!=null && pastPW!=null){
+            JSONObject postData = new JSONObject();
+            try {
+                postData.put("username", pastID);
+                postData.put("password", pastPW);
+
+                new sendLoginInfo(JoinLoginActivity.this).execute("/user/login", postData.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
         // Sign In
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-/*
+
                 String name = username.getText().toString();
                 String pw = password.getText().toString();
 
@@ -62,10 +80,11 @@ public class JoinLoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
- */
+
                 SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
-                editor.putString("username", "hj323");
+                editor.putString("username", username.getText().toString());
+                editor.putString("password", password.getText().toString());
                 editor.commit();
 
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
