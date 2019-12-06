@@ -9,12 +9,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/putRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="652dp"
+            android:layout_height="500dp"
             android:choiceMode="multipleChoice"
             android:scrollbarFadeDuration="0"
             android:scrollbarSize="5dp"
@@ -26,18 +30,16 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:spanCount="5" />
+            app:spanCount="5">
+
+        </androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/putButton"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:text="추가"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/putRecyclerView"
-            app:layout_constraintVertical_bias="1.0" />
+            android:layout_gravity="bottom"
+            android:text="추가" />
 
     </LinearLayout>
 

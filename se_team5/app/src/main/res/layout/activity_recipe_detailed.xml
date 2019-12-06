@@ -103,10 +103,8 @@
             android:layout_width="60sp"
             android:layout_height="60sp"
             android:layout_gravity="center"
-            android:background="@drawable/roundedbutton"
-            android:backgroundTint="#FFD180"
+            android:background="@drawable/likebutton"
             android:hapticFeedbackEnabled="false"
-            android:text="👍"
             android:textIsSelectable="false"
             android:theme="@style/Widget.AppCompat.Button" />
 
