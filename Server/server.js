@@ -2,6 +2,8 @@ var express = require("express");
 var login = require('./routes/login');
 var refrigerator = require('./routes/refrigerator');
 var recipe = require('./routes/recipe');
+var purchase = require('./routes/purchase');
+var credit = require('./routes/credit');
 var bodyParser = require('body-parser');
 
 var multer = require('multer');
@@ -21,12 +23,6 @@ app.use( bodyParser.urlencoded({ extended: true }) );
 app.use( bodyParser.json() );
 app.use('/image', express.static('uploads'));
 
-
-//app.use(function(req, res, next) {
-//    res.header("Access-Control-Allow-Origin", "*");
-//    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//    next();
-//});
 
 var router = express.Router();
 
@@ -48,6 +44,13 @@ router.delete('/user/refrigerator', refrigerator.delete_items);
 router.get('/recipe/search', recipe.recipe_search);
 router.post('/recipe/recommendation', recipe.recipe_recommendation);
 router.get('/recipe/detail', recipe.recipe_detail);
+// route to handle item purchase
+router.get('/user/basket', purchase.items);
+router.post('/user/basket', purchase.add_items);
+router.delete('/user/basket/remove', purchase.delete_items);
+router.delete('/user/basket/move', purchase.purchase_items);
+// route to handle recipe like
+router.get('/recipe/detail/like', credit.recipe_credit);
 
 app.use('/', router);
 app.listen(5000);

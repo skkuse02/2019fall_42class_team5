@@ -1,7 +1,8 @@
 // connect with database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    host     : '115.145.240.151',
+    //host     : '192.168.25.25',
+    host     : '192.168.0.79',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -17,7 +18,7 @@ exports.items = function (req, res){
   connection.query('SELECT * FROM refrigerator WHERE user_id = ?', req.query.username, function(error, rows, fields) {
     if(error){
       console.log("error ocurred", error);
-      res.status(400).send('Database error');
+      res.status(400).send('Database error').end();
     }
     else {
       // get item_id
@@ -30,7 +31,7 @@ exports.items = function (req, res){
       }
       var info = new Object();
       info.items = itemId;
-      res.status(200).json(info);
+      res.status(200).json(info).end();
     }
   });
 }
@@ -49,10 +50,10 @@ exports.add_items = function (req, res){
     console.log(str_query.sql);
     if(error){
       console.log("Error ocurred: ", error);
-      res.status(400).send('Database error');
+      res.status(400).send('Database error').end();
     }
     else {
-      res.sendStatus(200);
+      res.sendStatus(200).end();
     }
   });
 }
@@ -70,9 +71,9 @@ exports.delete_items = function (req, res){
   connection.query('DELETE FROM refrigerator WHERE (user_id, item_id) IN (?)', [values], function(error, rows, fields) {
     if(error){
       console.log('Error ocurred: ', error);
-      res.status(400).send('Database error');
+      res.status(400).send('Database error').end();
     }
     else
-      res.sendStatus(200);
+      res.sendStatus(200).end();
   });
 }
