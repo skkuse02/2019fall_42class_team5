@@ -87,8 +87,7 @@ public class JoinLoginActivity extends AppCompatActivity {
                 editor.putString("password", password.getText().toString());
                 editor.commit();
 
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+
             }
         });
 
