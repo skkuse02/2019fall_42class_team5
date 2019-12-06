@@ -49,10 +49,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
 
                     if (mSelectedItems.get(position, false) == false) {
                         mSelectedItems.put(position, true);
-                        v.setBackgroundColor(Color.YELLOW);
+                        v.setBackgroundColor(Color.rgb(255,204,153));
                     } else {
                         mSelectedItems.delete(position);
-                        v.setBackgroundColor(Color.WHITE);
+                        v.setBackgroundColor(Color.rgb(255,255,255));
                     }
                 }
             });

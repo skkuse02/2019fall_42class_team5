@@ -1,6 +1,8 @@
 package com.example.se_team5.item;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.se_team5.HttpRequest;
 import com.example.se_team5.MyGlobal;
@@ -22,16 +25,21 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class ItemListViewAdapter extends BaseAdapter {
 
     public String user_id;
 
     private ArrayList<Item> myBasketList;
+    private Activity mActivity;
 
-    public ItemListViewAdapter(ArrayList<Item> dataList) {
+    public ItemListViewAdapter(ArrayList<Item> dataList, Activity mActivity) {
         myBasketList = dataList;
+        this.mActivity = mActivity;
     }
+
 
     @Override
     public int getCount() {
@@ -77,6 +85,7 @@ public class ItemListViewAdapter extends BaseAdapter {
                     temp.put(myBasketList.get(pos).getId());
                     deleteData.put("items", temp);
                     new removeItemInRefrigerator().execute("/user/basket/remove", deleteData.toString());
+                    new getBasketItemList().execute("/user/basket", "?username="+user_id);
 
 
                 } catch (JSONException e) {
@@ -98,6 +107,7 @@ public class ItemListViewAdapter extends BaseAdapter {
                     temp.put(myBasketList.get(pos).getId());
                     data1.put("items", temp);
                     new removeItemInRefrigerator().execute("/user/basket/move", data1.toString());
+                    new getBasketItemList().execute("/user/basket", "?username="+user_id);
 
 
                 } catch (JSONException e) {
@@ -120,13 +130,16 @@ public class ItemListViewAdapter extends BaseAdapter {
         return myBasketList.get(position) ;
     }
 
-    private static class removeItemInRefrigerator extends AsyncTask<String, Void, String> {
+    private class removeItemInRefrigerator extends AsyncTask<String, Void, String> {
+
+        boolean justRemove = false;
 
         removeItemInRefrigerator() { }
 
         @Override
         protected String doInBackground(String... params) {
             HttpRequest req = new HttpRequest(MyGlobal.getData());
+            if(params[0].contains("remove")) justRemove = true;
             return req.sendDelete(params[0], params[1]);
         }
         protected void onPostExecute(String response) {
@@ -135,47 +148,68 @@ public class ItemListViewAdapter extends BaseAdapter {
             if(response == null) return;
 
             if (response.substring(0,3).equals("200")) {
-                // 성공 시, 메인 화면 띄우기
-                //Toast.makeText(activity, "냉장고에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                if(justRemove)
+                    Toast.makeText(mActivity, "장바구니에서 제거되었습니다.", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(mActivity, "냉장고에 추가되었습니다.", Toast.LENGTH_SHORT).show();
             } else {
                 //Toast.makeText(activity, "오류: " + response.substring(0,3), Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private static class putItems extends AsyncTask<String, Void, String> {
+    private class getBasketItemList extends AsyncTask<String, Void, String> {
+
+        getBasketItemList() { }
 
         @Override
         protected String doInBackground(String... params) {
-
-            String response;
-
-            HttpURLConnection httpURLConnection = null;
-            try {
-                HttpRequest req = new HttpRequest(MyGlobal.getData());
-                return req.sendPost(params[0], params[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                // server와의 connection 해제
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-            }
-
-            return null;
-
+            HttpRequest req = new HttpRequest(MyGlobal.getData());
+            return req.sendGet(params[0], params[1]);
         }
+
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
 
-            if(response == null) return;
+            if(response==null) return;
 
             if (response.substring(0,3).equals("200")) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.substring(3));
+                    SharedPreferences pref = mActivity.getSharedPreferences("userFile", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("userBasket", jsonObject.toString());
+                    editor.commit();
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                SharedPreferences pref = mActivity.getSharedPreferences("userFile", MODE_PRIVATE);
+                myBasketList = jsonParsing(pref.getString("userBasket",""));
+                notifyDataSetChanged();
             } else {
-
+                return;
             }
         }
+    }
+
+    private ArrayList<Item> jsonParsing(String json) {
+        SharedPreferences sp = mActivity.getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
+        try{
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray ItemArray = jsonObject.getJSONArray("items");
+
+            ArrayList<Item> li = new ArrayList<Item>();
+
+            for(int i=0; i<ItemArray.length(); i++)
+                li.add(AllItems_.get((int)ItemArray.get(i)));
+
+            return li;
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

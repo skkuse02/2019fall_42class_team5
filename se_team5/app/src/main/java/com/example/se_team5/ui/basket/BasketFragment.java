@@ -3,9 +3,9 @@ package com.example.se_team5.ui.basket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,21 +20,16 @@ import com.example.se_team5.HttpRequest;
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.PutActivity;
 import com.example.se_team5.R;
-import com.example.se_team5.item.AllItems;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemListViewAdapter;
-import com.example.se_team5.item.ItemsAdapter;
-import com.example.se_team5.ui.refrigerator.RefrigeratorFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
-import static androidx.lifecycle.ViewModelProviders.*;
 
 public class BasketFragment extends Fragment {
 
@@ -42,6 +37,7 @@ public class BasketFragment extends Fragment {
 
     ListView listview ;
     ItemListViewAdapter adapter;
+    private ArrayList<Item> AllItems_;
 
     public String user_id;
 
@@ -52,6 +48,7 @@ public class BasketFragment extends Fragment {
         Button buyButton = root.findViewById(R.id.BuyButton);
 
         SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         user_id = sp.getString("username","");
 
         listview = (ListView) root.findViewById(R.id.list_item);
@@ -66,7 +63,7 @@ public class BasketFragment extends Fragment {
 
                 Intent intent = new Intent(getActivity().getApplicationContext(), PutActivity.class);
                 intent.putExtra("to", 1);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
             }
         });
 
@@ -82,6 +79,15 @@ public class BasketFragment extends Fragment {
         });
 
         return root;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            new getBasketItemList().execute("/user/basket", "?username="+user_id);
+        }
     }
 
     private class getBasketItemList extends AsyncTask<String, Void, String> {
@@ -113,7 +119,7 @@ public class BasketFragment extends Fragment {
 
                 SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
                 ITEM_LIST = jsonParsing(pref.getString("userBasket",""));
-                adapter = new ItemListViewAdapter(ITEM_LIST);
+                adapter = new ItemListViewAdapter(ITEM_LIST, getActivity());
                 listview.setAdapter(adapter);
             } else {
                 return;
@@ -121,7 +127,9 @@ public class BasketFragment extends Fragment {
         }
     }
 
-    private static ArrayList<Item> jsonParsing(String json) {
+    private ArrayList<Item> jsonParsing(String json) {
+        SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         try{
             JSONObject jsonObject = new JSONObject(json);
             JSONArray ItemArray = jsonObject.getJSONArray("items");
@@ -129,7 +137,7 @@ public class BasketFragment extends Fragment {
             ArrayList<Item> li = new ArrayList<Item>();
 
             for(int i=0; i<ItemArray.length(); i++)
-                li.add(new AllItems().findItem((int)ItemArray.get(i)));
+                li.add(AllItems_.get((int)ItemArray.get(i)));
 
             return li;
         }catch (JSONException e) {

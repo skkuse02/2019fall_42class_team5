@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject temp = new JSONObject();
                 temp.put("name", names[i]);
                 temp.put("image", images[i]);
+                temp.put("id", i);
                 arr.put(temp);
-
             }
 
             jsonObject.put("items", arr);

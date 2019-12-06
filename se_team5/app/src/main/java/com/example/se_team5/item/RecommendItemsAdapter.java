@@ -50,12 +50,12 @@ public class RecommendItemsAdapter extends RecyclerView.Adapter<RecommendItemsAd
 
                     if (mSelectedItems1.get(position, false) == false && mSelectedItems2.get(position, false) == false) {
                         mSelectedItems1.put(position, true);
-                        v.setBackgroundColor(Color.YELLOW);
+                        v.setBackgroundColor(Color.rgb(255,204,153));
                         //notifyItemChanged(position);
                     }else if (mSelectedItems1.get(position, false) == true && mSelectedItems2.get(position, false) == false) {
                         mSelectedItems1.delete(position);
                         mSelectedItems2.put(position, true);
-                        v.setBackgroundColor(Color.CYAN);
+                        v.setBackgroundColor(Color.rgb(153,204,255));
                         //notifyItemChanged(position);
                     } else if(mSelectedItems2.get(position, false) == true && mSelectedItems1.get(position, false) == false) {
                         mSelectedItems2.delete(position);
