@@ -26,8 +26,11 @@
             android:id="@+id/go_basket"
             android:layout_width="250dp"
             android:layout_height="match_parent"
+            android:layout_margin="3sp"
             android:layout_weight="5"
+            android:background="@drawable/itemlist_button"
             android:text="담기"
+            android:textColor="#000000"
             android:textSize="10sp"></Button>
 
     </LinearLayout>
