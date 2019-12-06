@@ -1,6 +1,8 @@
 package com.example.se_team5.ui.recipe;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,12 +30,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeDetailedActivity extends AppCompatActivity {
-    private Integer like;
+    private Boolean liked;
     private Integer recipe_id;
+    private String user_id;
     private List<Item> items_list = new ArrayList<>();
     private List<Step> steps_list = new ArrayList<>();
     private StepAdapter stepAdapter;
     private ItemListAdapter itemListAdapter;
+
+    private Button like_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +48,8 @@ public class RecipeDetailedActivity extends AppCompatActivity {
         final ImageView detail_image = findViewById(R.id.detail_image);
         final TextView recipe_title = findViewById(R.id.recipe_title);
         final TextView items = findViewById(R.id.items);
-        final Button like_button = findViewById(R.id.like_button);
+        like_button = findViewById(R.id.like_button);
+
 
 
         // 넘겨준 정보 받기
@@ -60,7 +66,9 @@ public class RecipeDetailedActivity extends AppCompatActivity {
 
 
         // get detailed recipe info from server : GET method
-        new getDetailedRecipe().execute("/recipe/detail", "?recipe_id=" + recipe_id);
+        SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        user_id = sp.getString("username","");
+        new getDetailedRecipe().execute("/recipe/detail", "?recipe_id="+recipe_id+"&username="+user_id);
 
         // get a reference to recyclerView
         RecyclerView steplistView = findViewById(R.id.step_list);
@@ -79,7 +87,7 @@ public class RecipeDetailedActivity extends AppCompatActivity {
         stepAdapter.notifyDataSetChanged();
 
         // item listView 어댑터 붙이기
-        itemListAdapter = new ItemListAdapter(items_list);
+        itemListAdapter = new ItemListAdapter(items_list,user_id);
         itemlistView.setAdapter(itemListAdapter);
         itemlistView.setScrollContainer(false);
         itemListAdapter.notifyDataSetChanged();
@@ -88,10 +96,7 @@ public class RecipeDetailedActivity extends AppCompatActivity {
         like_button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //HttpRequest request = new HttpRequest(MyGlobal.getData());
-                //request.sendGet("/recipe/like","?recipe_id="+recipe_id);
-                like_button.setEnabled(false);
-
+                new changeLike().execute("/recipe/detail/like","?username="+user_id+"&recipe_id="+recipe_id+"&like="+ (liked ? 0:1));
             }
         });
 
@@ -114,10 +119,12 @@ public class RecipeDetailedActivity extends AppCompatActivity {
                 if (response.substring(0, 3).equals("200")) {
                     // get json object
                     JSONObject resObj = new JSONObject(response.substring(3));
-
-                    like = resObj.getInt("like");
                     JSONArray items = resObj.getJSONArray("items");
                     JSONArray steps = resObj.getJSONArray("steps");
+
+                    // recipe credit 정보 받아오기
+                    int likes = resObj.getInt("like");
+                    like_button.setText("👍 "+ likes);
 
                     ItemHashMap itemHashMap = new ItemHashMap();
                     // 레시피 item 정보 받아오기
@@ -125,7 +132,6 @@ public class RecipeDetailedActivity extends AppCompatActivity {
                         int id = items.getInt(i);
                         String name = itemHashMap.itemName(id);
                         items_list.add(new Item(name,0,id));
-                        Log.i("item",name+", "+id);
                     }
 
                     // 레시피 step 정보 받아오기
@@ -134,6 +140,12 @@ public class RecipeDetailedActivity extends AppCompatActivity {
                         steps_list.add(new Step(step));
                     }
 
+                    // 레시피 like 정보 받아오기
+                    liked = resObj.getInt("liked") == 1;
+                    if(liked){
+                        // 이미 like 했으면 누른상태로 변경
+                        like_button.setPressed(true);
+                    }
 
                     // 리스트에 변경사항 적용
                     stepAdapter.notifyDataSetChanged();
@@ -142,6 +154,37 @@ public class RecipeDetailedActivity extends AppCompatActivity {
 
             } catch (JSONException e) {
                 Log.e("Error", "JSONException");
+            }
+        }
+    }
+
+
+    private class changeLike extends AsyncTask<String,Void,String>{
+        HttpRequest req = new HttpRequest(MyGlobal.getData());
+
+        @Override
+        protected String doInBackground(String... params) {
+            return req.sendGet(params[0], params[1]);
+
+        }
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+            try {
+                if (response.equals("")) return;
+                if (response.substring(0, 3).equals("200")) {
+                    JSONObject resObj = new JSONObject(response.substring(3));
+                    boolean myaction = resObj.getInt("action")==1;
+                    int likes = resObj.getInt("like");
+
+                    // 버튼 상태 변경
+                    like_button.setPressed(myaction);
+                    like_button.setText("👍 "+ likes);
+                    liked = myaction;
+                }
+
+            } catch (Exception e) {
+                Log.e("Error", "Exception");
+                e.printStackTrace();
             }
         }
     }
