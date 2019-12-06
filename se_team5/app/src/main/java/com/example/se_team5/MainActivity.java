@@ -36,15 +36,17 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
 
         SharedPreferences check = getSharedPreferences("userFile", MODE_PRIVATE);
-        if(check.getString("allItems",null)!=null){
+        if(true){//check.getString("allItems",null).length()<1
+
             try {
                 // Excel 파일 읽기
-                InputStream inputStream = getBaseContext().getResources().getAssets().open("items.xls");
+                InputStream inputStream = getBaseContext().getResources().getAssets().open("item.xls");
                 Workbook workbook = Workbook.getWorkbook(inputStream);
 
                 Sheet sheet = workbook.getSheet(0); // 0번째 sheet 읽기
                 int endIdx = sheet.getColumn(1).length - 1;
 
+                Log.d("name", String.valueOf(endIdx));
                 // id 0 값 없으므로 채워넣기
                 names.add(null);
                 images.add(0);
@@ -53,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
                     // 두번째 열(B)
                     String name = sheet.getCell(1, i).getContents();
                     names.add(name);
-                    images.add(getResources().getIdentifier("@drawable/"+"item"+i+".png","drawable",this.getPackageName()));
+                    images.add(getResources().getIdentifier("@drawable/"+"item"+i,"drawable",this.getPackageName()));
+
+
                 }
 
             } catch (BiffException e) {
@@ -62,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
             SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             try {
@@ -70,15 +73,17 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray arr = new JSONArray();
 
                 for (int i = 1; i < names.size(); i++) {
+
                     JSONObject temp = new JSONObject();
                     temp.put("name", names.get(i));
                     temp.put("image", images.get(i));
+                    temp.put("id", i);
+                    Log.d("name", temp.toString());
                     arr.put(temp);
-
                 }
 
                 jsonObject.put("items", arr);
-                Log.d("name", jsonObject.toString());
+
                 editor.putString("allItems", jsonObject.toString());
                 editor.commit();
 

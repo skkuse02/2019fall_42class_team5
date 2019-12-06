@@ -33,10 +33,10 @@ public class JoinLoginActivity extends AppCompatActivity {
 
 
         SharedPreferences check = getSharedPreferences("userFile", MODE_PRIVATE);
-        String pastID = check.getString("username", "");
-        String pastPW = check.getString("password", "");
+        String pastID = check.getString("username","");
+        String pastPW = check.getString("password", null);
 
-        if(pastID!=null && pastPW!=null){
+        if(pastID.length()>0 && pastPW.length()>0){
             JSONObject postData = new JSONObject();
             try {
                 postData.put("username", pastID);
@@ -72,6 +72,14 @@ public class JoinLoginActivity extends AppCompatActivity {
 
                     new sendLoginInfo(JoinLoginActivity.this).execute("/user/login", postData.toString());
 
+
+                    SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putString("username", username.getText().toString());
+                    editor.putString("password", password.getText().toString());
+                    editor.commit();
+
+
                     // 빈칸으로 바꾸기
                     username.setText("");
                     password.setText("");
@@ -80,15 +88,6 @@ public class JoinLoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-
-                SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
-                editor.putString("username", username.getText().toString());
-                editor.putString("password", password.getText().toString());
-                editor.commit();
-
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
             }
         });
 
