@@ -22,6 +22,7 @@ import java.util.List;
 
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
                 // Excel 파일 읽기
                 InputStream inputStream = getBaseContext().getResources().getAssets().open("item.xls");
                 Workbook workbook = Workbook.getWorkbook(inputStream);
-
+                WorkbookSettings ws = new WorkbookSettings();
+                ws.setEncoding("Cp1252");
+                
                 Sheet sheet = workbook.getSheet(0); // 0번째 sheet 읽기
                 int endIdx = sheet.getColumn(1).length - 1;
 
