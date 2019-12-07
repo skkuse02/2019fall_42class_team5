@@ -1,8 +1,7 @@
 // connect with database
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    //host     : '192.168.25.25',
-    host     : '192.168.0.79',
+    host     : '115.145.227.249',
     user     : 'seteam5',
     password : 'se55555',
     port     : 3306,
@@ -46,16 +45,28 @@ exports.add_items = function (req, res){
     values.push([req.body.username, req.body.items[i]]);
   }
 
-  var str_query = connection.query('INSERT IGNORE INTO refrigerator (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
-    console.log(str_query.sql);
+  connection.query('SELECT count(*) as bool FROM refiregerator WHERE user_id = ? and item_id = ?', [values], function(error,rows,fields){
     if(error){
       console.log("Error ocurred: ", error);
       res.status(400).send('Database error').end();
     }
     else {
-      res.sendStatus(200).end();
+      if(rows[0]["bool"]){ // no duplication
+        connection.query('INSERT INTO refrigerator (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
+          if(error){
+            console.log("Error ocurred: ", error);
+            res.status(400).send('Database error').end();
+          }
+          else {
+            res.sendStatus(200).end();
+          }
+        }); // end of insert query
+      }
+      else {
+        res.status(400).send("Insert Request of Duplication").end();
+      }
     }
-  });
+  }); // end of check duplication query
 }
 
 
@@ -73,7 +84,11 @@ exports.delete_items = function (req, res){
       console.log('Error ocurred: ', error);
       res.status(400).send('Database error').end();
     }
-    else
-      res.sendStatus(200).end();
+    else{
+      if(rows.affectedRow)
+        res.status(400).send("Invalid Delete Request").end();
+      else
+        res.sendStatus(200).end();
+    }
   });
 }
