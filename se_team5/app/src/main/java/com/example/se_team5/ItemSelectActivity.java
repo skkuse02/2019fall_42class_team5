@@ -27,7 +27,6 @@ public class ItemSelectActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecommendItemsAdapter myAdapter;
-    private ArrayList<Item> AllItems_;
     private ArrayList<Item> ITEM_LIST;
 
     private String user_id;
@@ -38,7 +37,6 @@ public class ItemSelectActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recommend);
 
         SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         ITEM_LIST = jsonParsing(sp.getString("userRefrigerator",""));
         user_id = sp.getString("username","");
 
