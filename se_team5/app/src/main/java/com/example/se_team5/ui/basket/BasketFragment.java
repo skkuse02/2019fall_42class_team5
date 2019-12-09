@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,7 +136,7 @@ public class BasketFragment extends Fragment {
             ArrayList<Item> li = new ArrayList<Item>();
 
             for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)));
+                li.add(AllItems_.get((int)ItemArray.get(i)-1));
 
             return li;
         }catch (JSONException e) {

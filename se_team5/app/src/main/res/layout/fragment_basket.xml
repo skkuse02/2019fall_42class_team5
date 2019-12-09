@@ -35,7 +35,7 @@
             android:layout_marginBottom="10sp"
             android:layout_weight="1"
             android:background="@drawable/semiroundedbutton"
-            android:text="냉장고에 넣기"
+            android:text="장바구니에 추가"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold" />

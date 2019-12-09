@@ -26,6 +26,7 @@ public class ItemSelectActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecommendItemsAdapter myAdapter;
     private ArrayList<Item> AllItems_;
+    private ArrayList<Item> ITEM_LIST;
 
     private String user_id;
 
@@ -36,6 +37,7 @@ public class ItemSelectActivity extends AppCompatActivity {
 
         SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
         AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
+        ITEM_LIST = jsonParsing(sp.getString("userRefrigerator",""));
         user_id = sp.getString("username","");
 
         Button recommendButton = findViewById(R.id.recommendButton);
@@ -44,7 +46,7 @@ public class ItemSelectActivity extends AppCompatActivity {
         GridLayoutManager manager = new GridLayoutManager(this, 5);
         recyclerView.setLayoutManager(manager); // LayoutManager 등록
 
-        myAdapter = new RecommendItemsAdapter(AllItems_);
+        myAdapter = new RecommendItemsAdapter(ITEM_LIST);
         recyclerView.setAdapter(myAdapter);  // Adapter 등록
         recommendButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -79,5 +81,24 @@ public class ItemSelectActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private ArrayList<Item> jsonParsing(String json) {
+        SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
+        try{
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray ItemArray = jsonObject.getJSONArray("items");
+
+            ArrayList<Item> li = new ArrayList<Item>();
+
+            for(int i=0; i<ItemArray.length(); i++)
+                li.add(AllItems_.get((int)ItemArray.get(i)-1));
+
+            return li;
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

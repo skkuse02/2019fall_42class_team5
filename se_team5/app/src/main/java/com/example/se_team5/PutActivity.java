@@ -1,11 +1,9 @@
 package com.example.se_team5;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.Button;
@@ -76,7 +74,7 @@ public class PutActivity extends AppCompatActivity {
 
                         for(int i = 0; i < AllItems_.size(); i++){
                             if(a.get(i, false))
-                                temp.put(i);
+                                temp.put(i+1);
                         }
 
                         postData.put("items", temp);
@@ -246,7 +244,7 @@ public class PutActivity extends AppCompatActivity {
             ArrayList<Item> li = new ArrayList<Item>();
 
             for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)));
+                li.add(AllItems_.get((int)ItemArray.get(i)-1));
 
             return li;
         }catch (JSONException e) {
