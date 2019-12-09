@@ -37,6 +37,10 @@ public class JoinActivity extends AppCompatActivity {
                 if ((_password).equals(_pwCheck)) {
                     // 입력 값 없는 것 처리
                     if (_username.length() == 0 || _password.length() == 0) return;
+                    if(_password.length()<4){
+                        Toast.makeText(getApplicationContext(),"비밀번호는 4자리 이상이어야 합니다",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
                     JSONObject postData = new JSONObject();
                     try {
