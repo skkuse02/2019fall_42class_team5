@@ -82,7 +82,7 @@ public class RecipeInfoAdapter extends RecyclerView.Adapter {
             AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
             StringBuilder sb = new StringBuilder();
             for(int i=0;i<recipeinfo.items.size();i++) {
-                sb.append(AllItems_.get(recipeinfo.items.get(i)).getName()+" ");
+                sb.append(AllItems_.get(recipeinfo.items.get(i)-1).getName()+" ");
             }
             items.setText(sb.toString());
 
