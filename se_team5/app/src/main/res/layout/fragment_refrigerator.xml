@@ -47,7 +47,7 @@
             android:layout_marginBottom="10sp"
             android:layout_weight="1"
             android:background="@drawable/semiroundedbutton"
-            android:text="추가"
+            android:text="재료 추가"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"

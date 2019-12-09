@@ -11,6 +11,7 @@
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="#FFFFFF"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/signupButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,16 +21,17 @@
 
         <EditText
             android:id="@+id/recipe_keyword"
-            android:layout_width="210dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="20sp"
+            android:layout_weight="1"
             android:ems="10"
             android:hint="검색할 레시피를 입력하세요"
             android:inputType="textPersonName"
             android:paddingStart="15dp"
             android:textAlignment="textStart"
-            android:textSize="16sp"
+            android:textSize="20sp"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="49dp" />
 
@@ -37,8 +39,15 @@
             android:id="@+id/search_button"
             android:layout_width="60dp"
             android:layout_height="50dp"
-            android:layout_marginEnd="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginBottom="5sp"
+            android:background="@drawable/semiroundedbutton"
             android:text="검색"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
             tools:layout_editor_absoluteX="319dp"
             tools:layout_editor_absoluteY="49dp" />
 
