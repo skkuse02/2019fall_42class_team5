@@ -189,7 +189,7 @@ public class RefrigeratorFragment extends Fragment{
             ArrayList<Item> li = new ArrayList<Item>();
 
             for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)));
+                li.add(AllItems_.get((int)ItemArray.get(i)-1));
 
             return li;
         }catch (JSONException e) {

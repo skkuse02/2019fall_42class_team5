@@ -133,7 +133,7 @@ public class RecipeDetailedActivity extends AppCompatActivity {
                     // 레시피 item 정보 받아오기
                     for (int i = 0; i < items.length(); i++) {
                         int id = items.getInt(i);
-                        String name = AllItems_.get(id).getName();
+                        String name = AllItems_.get(id-1).getName();
                         items_list.add(new Item(name,0,id));
                     }
 
