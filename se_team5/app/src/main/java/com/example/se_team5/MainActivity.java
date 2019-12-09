@@ -3,6 +3,7 @@ package com.example.se_team5;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -101,5 +102,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+    }
+
+
+    public boolean onCreateOptionMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_logout, menu);
+        return true;
     }
 }
