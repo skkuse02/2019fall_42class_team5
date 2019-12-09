@@ -1,9 +1,12 @@
 package com.example.se_team5;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -104,9 +107,37 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
     }
 
-
-    public boolean onCreateOptionMenu(Menu menu){
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_logout, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected (MenuItem item)
+    {
+        Toast toast = Toast.makeText(getApplicationContext(),"", Toast.LENGTH_LONG);
+
+        switch(item.getItemId())
+        {
+            case R.id.menu_logout:
+                toast.setText("로그아웃 되었습니다.");
+
+                Intent intent = new Intent(getApplicationContext(), JoinLoginActivity.class);
+                startActivity(intent);
+
+                SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.remove("username");
+                editor.remove("password");
+                editor.commit();
+
+                finish();
+                break;
+        }
+
+        toast.show();
+
+        return super.onOptionsItemSelected(item);
     }
 }
