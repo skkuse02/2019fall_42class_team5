@@ -22,7 +22,7 @@ import com.example.se_team5.HttpRequest;
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.PutActivity;
 import com.example.se_team5.R;
-import com.example.se_team5.RecommendActivity;
+import com.example.se_team5.ItemSelectActivity;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemsAdapter;
 
@@ -115,7 +115,7 @@ public class RefrigeratorFragment extends Fragment{
         recommendButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), RecommendActivity.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), ItemSelectActivity.class);
                 startActivity(intent);
             }
         });

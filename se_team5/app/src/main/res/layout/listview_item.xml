@@ -6,15 +6,15 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="126dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_width="50sp"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="296dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="5"
         android:gravity="center_vertical"
         android:text="New Text"
         android:textColor="#000000"
@@ -23,14 +23,26 @@
 
     <Button
         android:id="@+id/deleteBasketButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="3sp"
+        android:layout_marginTop="5sp"
+        android:layout_marginRight="2sp"
+        android:layout_marginBottom="5sp"
+        android:layout_weight="9"
+        android:background="@drawable/itemlist_button"
         android:text="삭제"></Button>
 
     <Button
         android:id="@+id/BuyItemButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginLeft="2sp"
+        android:layout_marginTop="5sp"
+        android:layout_marginRight="3sp"
+        android:layout_marginBottom="5sp"
+        android:layout_weight="9"
+        android:background="@drawable/itemlist_button"
         android:text="담기"></Button>
 
 </LinearLayout>
