@@ -71,6 +71,8 @@ public class ItemSelectActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(ItemSelectActivity.this,RecommendActivity.class);
                     intent.putExtra("postData",postData.toString());
+                    ItemSelectActivity.this.startActivity(intent);
+                    finish();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
