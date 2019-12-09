@@ -1,7 +1,5 @@
 package com.example.se_team5;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +7,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ListView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemListViewAdapter;
@@ -71,7 +71,7 @@ public class BrowseActivity extends AppCompatActivity {
             ArrayList<Item> li = new ArrayList<Item>();
 
             for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)));
+                li.add(AllItems_.get((int)ItemArray.get(i)-1));
 
             return li;
         }catch (JSONException e) {

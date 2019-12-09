@@ -17,6 +17,13 @@ public class Item {
         this.imageResourceID = imageResourceID;
     }
 
+    public Item (String name, String category, int imageResourceID, int id){
+        this.name = name;
+        this.category = category;
+        this.imageResourceID = imageResourceID;
+        this.id = id;
+    }
+
     public Item (String name, int imageResourceID, int id){
         this.name = name;
         this.imageResourceID = imageResourceID;
@@ -40,7 +47,7 @@ public class Item {
 
             for(int i=0; i<ItemArray.length(); i++){
                 JSONObject temp = ItemArray.getJSONObject(i);
-                itemList.add(new Item(temp.getString("name"), temp.getInt("image"), temp.getInt("id")));
+                itemList.add(new Item(temp.getString("name"),temp.getString("category"), temp.getInt("image"), temp.getInt("id")));
             }
 
             return itemList;

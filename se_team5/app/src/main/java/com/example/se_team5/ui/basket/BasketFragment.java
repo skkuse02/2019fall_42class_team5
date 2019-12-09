@@ -72,7 +72,7 @@ public class BasketFragment extends Fragment {
             public void onClick(View v) {
 
                 Intent intent = new Intent(getActivity().getApplicationContext(), BrowseActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 1);
 
             }
         });

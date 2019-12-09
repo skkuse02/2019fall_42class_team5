@@ -43,15 +43,17 @@ public class PutActivity extends AppCompatActivity {
         AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         user_id = sp.getString("username", "");
 
+        Button PutButton = findViewById(R.id.putButton);
 
         Intent intent = getIntent();
         if(intent.getExtras().getInt("to")==1){
             url = "/user/basket";
+            PutButton.setText("장바구니에 추가");
         } else if(intent.getExtras().getInt("to")==0){
             url = "/user/refrigerator";
+            PutButton.setText("냉장고에 추가");
         }
 
-        Button PutButton = findViewById(R.id.putButton);
 
         recyclerView = findViewById(R.id.putRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(this, 5);
