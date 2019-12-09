@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -57,24 +59,30 @@ public class ItemSelectActivity extends AppCompatActivity {
 
                     SparseBooleanArray good = myAdapter.getmSelectedItems1();
                     JSONArray good_array = new JSONArray();
-                    for(int i = 0; i < AllItems_.size(); i++){
+                    for(int i = 0; i < ITEM_LIST.size(); i++){
                         if(good.get(i, false))
-                            good_array.put(i);
+                            good_array.put(ITEM_LIST.get(i).getId());
                     }
                     postData.put("good", good_array);
 
                     SparseBooleanArray bad = myAdapter.getmSelectedItems2();
                     JSONArray bad_array = new JSONArray();
-                    for(int i = 0; i < AllItems_.size(); i++){
+                    for(int i = 0; i < ITEM_LIST.size(); i++){
                         if(bad.get(i, false))
-                            bad_array.put(i);
+                            bad_array.put(ITEM_LIST.get(i).getId());
                     }
                     postData.put("bad", bad_array);
 
-                    Intent intent = new Intent(ItemSelectActivity.this,RecommendActivity.class);
-                    intent.putExtra("postData",postData.toString());
-                    ItemSelectActivity.this.startActivity(intent);
-                    finish();
+                    if(good_array.length()==0){
+                        Toast.makeText(getParent(), "좋아하는 재료를 골라주세요", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Intent intent = new Intent(ItemSelectActivity.this,RecommendActivity.class);
+                        intent.putExtra("postData",postData.toString());
+                        Log.d("Ddd", postData.toString());
+                        ItemSelectActivity.this.startActivity(intent);
+                        finish();
+
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

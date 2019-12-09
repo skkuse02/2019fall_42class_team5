@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,12 @@ public class JoinLoginActivity extends AppCompatActivity {
         Button signinButton = findViewById(R.id.signinButton);
         TextView signupText = findViewById(R.id.signupButton);
 
+        CheckBox autoLogin = (CheckBox) findViewById(R.id.autoLogin) ;
+        autoLogin.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
 
         SharedPreferences check = getSharedPreferences("userFile", MODE_PRIVATE);
         String pastID = check.getString("username","");
