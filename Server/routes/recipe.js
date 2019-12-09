@@ -1,18 +1,9 @@
-
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-    host     : '115.145.227.249',
-    user     : 'seteam5',
-    password : 'se55555',
-    port     : 3306,
-    database : 'seteam5'
-  });
-
-connection.connect();
-
+// connect with database
+var connection = require('./db');
 
 //이용자가 레시피를 검색하면, db에서 일치하는 레시피들을 찾아서 대략적인 정보를 어플에 보내준다.
 exports.recipe_search = function (req, res) {
+  console.log("Search Recipe");
   var recipeList = new Array(); // recipe 정보 목록
   var result = new Object(); // 보내지는 JSON
 
@@ -73,86 +64,187 @@ exports.recipe_search = function (req, res) {
 
 //이용자가 선택한 재료들을 기반으로, db에서 일치하는 레시피들을 찾아서 대략적인 정보를 어플에 보내준다.
 exports.recipe_recommendation = function (req, res) {
+  console.log("Recipe recommendation");
   var good = req.body.good;
+  for(var i=0;i<good.length;i++){
+    if(good[i] == 69){ // 닭고기
+      good.push(24);
+      good.push(36);
+    }
+    if(good[i] == 74){ // 돼지고기
+      good.push(30);
+      good.push(67);
+    }
+  }
   var bad = req.body.bad;
   if(req.body.bad.length == 0){
    bad = [0];
   }
-  // get recipe_id of recommended recipe
+  for(var i=0;i<bad.length;i++){
+    if(bad[i] == 69){ // 닭고기
+      bad.push(24);
+      bad.push(36);
+    }
+    if(bad[i] == 74){ // 돼지고기
+      bad.push(30);
+      bad.push(67);
+    }
+  }
 
+  console.log(good);
+  console.log(bad);
+
+  // get recipe_id of recommended recipe
   connection.query('SELECT recipe_id FROM authentic_recipe WHERE (item1 in (?) or item2 in (?) or item3 in (?)) and recipe_id NOT IN (SELECT recipe_id FROM authentic_ingredient WHERE item_id in (?)) ORDER BY credit desc', [good, good, good, bad], function( error, rows, fields) {
     if(error){
       console.log("error ocurred: ", error);
       res.status(400).send("Database error").end();
     }
     else {
-      var idList = new Array(); // recipe_id list
-      var result = new Object(); // final result
-      for(var i=0;i<rows.length;i++){
-        for(var key in rows[i]){
-          idList.push(rows[i]["recipe_id"]);
+      if(rows.length){ // 추천 레시피 있는 경우
+        var idList = new Array(); // recipe_id list
+        var result = new Object(); // final result
+        for(var i=0;i<rows.length;i++){
+          for(var key in rows[i])
+            idList.push(rows[i]["recipe_id"]);
         }
-      }
-      console.log(idList);
+        console.log(idList);
 
-      // get recipe summary
-      connection.query('SELECT * FROM authentic_recipe WHERE recipe_id IN (?)', [idList], function(error, rows, fields) {
-        if(error){
-          console.log('error ocurred: ', error);
-          res.status(400).send('Database error').end();
-        }
-        else {
-          var recipeList = new Array();
-          for(var i=0;i<rows.length;i++){
-            var recipe = new Object();
-            var items = new Array();
-            for(var key in rows[i]){
-              switch(key){
-                case "recipe_id" :
-                recipe.recipe_id = rows[i][key];
-                break;
-                case "recipe_name" :
-                  recipe.recipe_name = rows[i][key];
-                  break;
-                case "main_img_src" :
-                  recipe.mainImage = rows[i][key];
-                  break;
-                case "credit" :
-                  recipe.like = rows[i][key];
-                  break;
-                case "item1" :
-                  if(rows[i][key]) {
-                    items.push(rows[i][key]);
-                  }
-                  break;
-                case "item2" :
-                  if(rows[i][key]) {
-                    items.push(rows[i][key]);
-                  }
-                  break;
-                case "item3" :
-                  if(rows[i][key]) {
-                    items.push(rows[i][key]);
-                  }
-                  break;
-                case "description" :
-                  recipe.description = rows[i][key];
-                  break;
-                case "recipe_id" :
-                  var recipe_id = rows[i][key];
-                  break;
-                default :
-                  break;
-              }
-              recipe.items = items;
-            }
-            recipeList.push(recipe);
+        // get recipe summary
+        connection.query('SELECT * FROM authentic_recipe WHERE recipe_id IN (?)', [idList], function(error, rows, fields) {
+          if(error){
+            console.log('error ocurred: ', error);
+            res.status(400).send('Database error').end();
           }
-          result.recipe_main = recipeList;
-          console.log(result);
-          res.status(200).json(result).end();
-        }
-      });
+          else {
+            var recipeList = new Array();
+            for(var i=0;i<rows.length;i++){
+              var recipe = new Object();
+              var items = new Array();
+              for(var key in rows[i]){
+                switch(key){
+                  case "recipe_id" :
+                  recipe.recipe_id = rows[i][key];
+                  break;
+                  case "recipe_name" :
+                    recipe.recipe_name = rows[i][key];
+                    break;
+                  case "main_img_src" :
+                    recipe.mainImage = rows[i][key];
+                    break;
+                  case "credit" :
+                    recipe.like = rows[i][key];
+                    break;
+                  case "item1" :
+                    if(rows[i][key]) {
+                      items.push(rows[i][key]);
+                    }
+                    break;
+                  case "item2" :
+                    if(rows[i][key]) {
+                      items.push(rows[i][key]);
+                    }
+                    break;
+                  case "item3" :
+                    if(rows[i][key]) {
+                      items.push(rows[i][key]);
+                    }
+                    break;
+                  case "description" :
+                    recipe.description = rows[i][key];
+                    break;
+                  case "recipe_id" :
+                    var recipe_id = rows[i][key];
+                    break;
+                  default :
+                    break;
+                }
+                recipe.items = items;
+              }
+              recipeList.push(recipe);
+            }
+            result.recipe_main = recipeList;
+            console.log(result);
+            res.status(200).json(result).end();
+          }
+        });
+      } // end of 우선책
+      else{ // 추천 레시피가 없는 경우
+        connection.query('SELECT recipe_id FROM authentic_ingredient WHERE item_id = ?', [good], function(error, rows, fields){
+          if(error){
+            console.log("error ocurred: ", error);
+            res.status(400).send("Database error").end();
+          }
+          else{
+            var idList = new Array(); // recipe_id list
+            var result = new Object();
+            for(var j=0;j<rows.length;j++){
+              for(var key in rows[j])
+                idList.push(rows[j]["recipe_id"]);
+            }
+            console.log(idList);
+
+            // get recipe summary
+            connection.query('SELECT * FROM authentic_recipe WHERE recipe_id IN (?)', [idList], function(error, rows, fields) {
+              if(error){
+                console.log('error ocurred: ', error);
+                res.status(400).send('Database error').end();
+              }
+              else {
+                var recipeList = new Array();
+                for(var i=0;i<rows.length;i++){
+                  var recipe = new Object();
+                  var items = new Array();
+                  for(var key in rows[i]){
+                    switch(key){
+                      case "recipe_id" :
+                      recipe.recipe_id = rows[i][key];
+                      break;
+                      case "recipe_name" :
+                        recipe.recipe_name = rows[i][key];
+                        break;
+                      case "main_img_src" :
+                        recipe.mainImage = rows[i][key];
+                        break;
+                      case "credit" :
+                        recipe.like = rows[i][key];
+                        break;
+                      case "item1" :
+                        if(rows[i][key]) {
+                          items.push(rows[i][key]);
+                        }
+                        break;
+                      case "item2" :
+                        if(rows[i][key]) {
+                          items.push(rows[i][key]);
+                        }
+                        break;
+                      case "item3" :
+                        if(rows[i][key]) {
+                          items.push(rows[i][key]);
+                        }
+                        break;
+                      case "description" :
+                        recipe.description = rows[i][key];
+                        break;
+                      case "recipe_id" :
+                        var recipe_id = rows[i][key];
+                        break;
+                      default :
+                        break;
+                    }
+                    recipe.items = items;
+                  }
+                  recipeList.push(recipe);
+                }
+                result.recipe_main = recipeList;
+                console.log(result);
+                res.status(200).json(result).end();
+              }
+            }); // get main info.
+          }
+        });
+      } // end of 차선책
     }
   });
 }
@@ -160,6 +252,7 @@ exports.recipe_recommendation = function (req, res) {
 
 //이용자가 한가지 레시피를 선택 했을 떄, 해당 레시피의 디테일한 정보를 전달한다.
 exports.recipe_detail = function (req, res) {
+  console.log("Recipe detailed info.");
   // get credit
   connection.query('SELECT credit FROM authentic_recipe WHERE recipe_id = ?', req.query.recipe_id, function(error, rows, fields) {
     var info = new Object();
