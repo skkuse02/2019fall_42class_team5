@@ -2,8 +2,6 @@
 var connection = require('./db');
 
 exports.register = function (req, res) {
-    console.log("Register");
-    console.log("req", req);
 
     var users = {
         "user_id": req.body.username,
@@ -21,7 +19,6 @@ exports.register = function (req, res) {
                   console.log("error ocurred", error);
                   res.sendStatus(400).end();
               } else {
-                  console.log('The solution is: ', results);
                   res.sendStatus(200).end();
               }
           });

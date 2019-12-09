@@ -2,6 +2,7 @@ package com.example.se_team5.item;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -186,6 +187,9 @@ public class ItemListViewAdapter extends BaseAdapter {
                 SharedPreferences pref = mActivity.getSharedPreferences("userFile", MODE_PRIVATE);
                 myBasketList = jsonParsing(pref.getString("userBasket",""));
                 notifyDataSetChanged();
+                Intent intent = new Intent();
+                intent.putExtra("result","OK");
+                mActivity.setResult(1,intent);
             } else {
                 return;
             }

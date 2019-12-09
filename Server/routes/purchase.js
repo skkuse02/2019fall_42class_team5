@@ -95,7 +95,7 @@ exports.purchase_items = function (req, res){
       if(rows.affectedRow)
         res.status(400).send("Invalid Delete Request").end();
       else {
-        connection.query('INSERT INTO refrigerator (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
+        connection.query('INSERT IGNORE INTO refrigerator (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
         if(error){
             console.log("Error ocurred: ", error);
             res.sendStatus(400).end();
