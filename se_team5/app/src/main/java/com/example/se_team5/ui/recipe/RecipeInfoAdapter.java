@@ -2,6 +2,7 @@ package com.example.se_team5.ui.recipe;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.R;
-import com.example.se_team5.item.ItemHashMap;
+import com.example.se_team5.item.Item;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class RecipeInfoAdapter extends RecyclerView.Adapter {
     private Context context; // fragment context
     private List<RecipeInfo> recipeList; // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
+    private ArrayList<Item> AllItems_;
 
     public RecipeInfoAdapter(Context context,List<RecipeInfo> recipeList) {
         this.context = context;
@@ -73,10 +78,11 @@ public class RecipeInfoAdapter extends RecyclerView.Adapter {
             description.setText(recipeinfo.description);
 
             // items 받기
-            ItemHashMap itemHashMap = new ItemHashMap();
+            SharedPreferences sp = context.getSharedPreferences("userFile", MODE_PRIVATE);
+            AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
             StringBuilder sb = new StringBuilder();
             for(int i=0;i<recipeinfo.items.size();i++) {
-                sb.append(itemHashMap.itemName(recipeinfo.items.get(i))+" ");
+                sb.append(AllItems_.get(recipeinfo.items.get(i)).getName()+" ");
             }
             items.setText(sb.toString());
 

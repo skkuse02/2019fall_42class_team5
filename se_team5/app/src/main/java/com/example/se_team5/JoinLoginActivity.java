@@ -50,7 +50,6 @@ public class JoinLoginActivity extends AppCompatActivity {
 
         }
 
-
         // Sign In
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override

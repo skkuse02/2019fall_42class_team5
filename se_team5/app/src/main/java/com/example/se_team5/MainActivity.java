@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     // 두번째 열(B)
                     String name = sheet.getCell(1, i).getContents();
                     names.add(name);
-                    images.add(getResources().getIdentifier("@drawable/"+"item"+i,"drawable",this.getPackageName()));
+                    images.add(getResources().getIdentifier("@drawable/"+"item"+String.valueOf(i),"drawable",this.getPackageName()));
 
 
                 }

@@ -19,7 +19,6 @@ import com.example.se_team5.HttpRequest;
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.R;
 import com.example.se_team5.item.Item;
-import com.example.se_team5.item.ItemHashMap;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -37,6 +36,8 @@ public class RecipeDetailedActivity extends AppCompatActivity {
     private List<Step> steps_list = new ArrayList<>();
     private StepAdapter stepAdapter;
     private ItemListAdapter itemListAdapter;
+    private ArrayList<Item> AllItems_;
+
 
     private Button like_button;
 
@@ -126,11 +127,13 @@ public class RecipeDetailedActivity extends AppCompatActivity {
                     int likes = resObj.getInt("like");
                     like_button.setText("👍 "+ likes);
 
-                    ItemHashMap itemHashMap = new ItemHashMap();
+                    SharedPreferences sp = getSharedPreferences("userFile", MODE_PRIVATE);
+                    AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
+
                     // 레시피 item 정보 받아오기
                     for (int i = 0; i < items.length(); i++) {
                         int id = items.getInt(i);
-                        String name = itemHashMap.itemName(id);
+                        String name = AllItems_.get(id).getName();
                         items_list.add(new Item(name,0,id));
                     }
 
