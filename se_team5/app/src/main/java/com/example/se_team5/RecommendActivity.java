@@ -1,129 +1,85 @@
 package com.example.se_team5;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.SparseBooleanArray;
-import android.view.View;
-import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.se_team5.item.Item;
-import com.example.se_team5.item.RecommendItemsAdapter;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.example.se_team5.ui.recipe.RecipeInfo;
+import com.example.se_team5.ui.recipe.RecipeInfoAdapter;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecommendActivity extends AppCompatActivity {
-
-    private static ArrayList<Item> SELECTED_ITEMS1 = new ArrayList<Item>();
-    private static ArrayList<Item> SELECTED_ITEMS2 = new ArrayList<Item>();
-    private RecyclerView recyclerView;
-    private RecommendItemsAdapter myAdapter;
-    private ArrayList<Item> AllItems_;
-
-    private String user_id;
+    private List<RecipeInfo> recipe_list = new ArrayList<>(); // recipe list
+    private RecipeInfoAdapter recipeInfoAdapter;
+    private ShimmerRecyclerView shimmerRecycler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recommend);
+        setContentView(R.layout.activity_recommend_list);
 
-        SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
 
-        Button recommendButton = findViewById(R.id.recommendButton);
+        Intent intent = getIntent();
+        String postData = intent.getExtras().getString("postData");
 
-        recyclerView = findViewById(R.id.recommendRecyclerView);
-        GridLayoutManager manager = new GridLayoutManager(this, 5);
-        recyclerView.setLayoutManager(manager); // LayoutManager 등록
 
-        myAdapter = new RecommendItemsAdapter(AllItems_);
-        recyclerView.setAdapter(myAdapter);  // Adapter 등록
-        recommendButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                JSONObject postData = new JSONObject();
-                try {
-                    postData.put("username", "hj323");
+        // get a reference to recyclerView
+        RecyclerView recyclerView = findViewById(R.id.recipe_listview2);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                    SparseBooleanArray a = myAdapter.getmSelectedItems1();
-                    JSONArray temp = new JSONArray();
-                    for(int i = 0; i < AllItems_.size(); i++){
-                        if(a.get(i, false))
-                            temp.put(i);
-                    }
-                    postData.put("good", temp);
-                    Log.d("good", String.valueOf(temp));
+        // recycler view에 어댑터 붙이기
+        recipeInfoAdapter = new RecipeInfoAdapter(this,recipe_list);
+        recyclerView.setAdapter(recipeInfoAdapter);
 
-                    a = myAdapter.getmSelectedItems2();
-                    temp = new JSONArray();
-                    for(int i = 0; i < AllItems_.size(); i++){
-                        if(a.get(i, false))
-                            temp.put(i);
-                    }
-                    postData.put("bad", temp);
+        shimmerRecycler = findViewById(R.id.shimmer_recycler_view2);
+        shimmerRecycler.showShimmerAdapter();
 
-                    Log.d("bad", String.valueOf(temp));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new recommendRecipe(RecommendActivity.this).execute("/recipe/refrigerator", "{\"good\":[3,4],\"bad\":[1,2]}");
-            }
-        });
+        new recommendRecipe().execute("/recipe/recommendation", postData);
+
+
+
     }
 
-    private static class recommendRecipe extends AsyncTask<String, Void, String> {
-
-        private WeakReference<RecommendActivity> activityReference;
-            recommendRecipe(RecommendActivity context) {
-            activityReference = new WeakReference<>(context);
-        }
-
+    private class recommendRecipe extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... params) {
-
-            String success;
-
-            HttpURLConnection httpURLConnection = null;
-            try {
-                HttpRequest req = new HttpRequest(MyGlobal.getData());
-                return req.sendPost(params[0], params[1]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                // server와의 connection 해제
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-            }
-
-            return null;
+            HttpRequest req = new HttpRequest(MyGlobal.getData());
+            return req.sendPost(params[0], params[1]);
 
         }
-        protected void onPostExecute(String success) {
-            super.onPostExecute(success);
+        protected void onPostExecute(String response) {
+            super.onPostExecute(response);
+            if (response == null) return ;
+            if (response.substring(0,3).equals("200")) {
+                try {
+                    JSONObject jObject = new JSONObject(response.substring(3));
+                    JSONArray recipe_main = jObject.getJSONArray("recipe_main");
+                    int length = recipe_main.length();
 
-            RecommendActivity activity = activityReference.get();
+                    // 레시피 각각의 정보 받아오기
+                    for (int i = 0; i < length; i++) {
+                        JSONObject recipe = recipe_main.getJSONObject(i);
+                        // json parsing 해서 recipe list에 넣기
+                        recipe_list.add(new RecipeInfo(recipe));
 
-            if (activity == null) return;
-            if(success == null) return ;
-
-            if (success.substring(0,3).equals("200")) {
-                activity.finish();
-                //Intent intent = new Intent(activity, MainActivity.class);
-                //activity.startActivity(intent);
-            } else {
+                    }
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+                shimmerRecycler.hideShimmerAdapter();
+                recipeInfoAdapter.notifyDataSetChanged();
 
             }
         }
