@@ -16,6 +16,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="5"
         android:gravity="center_vertical"
+        android:paddingLeft="5sp"
         android:text="New Text"
         android:textColor="#000000"
         android:textSize="16dp" />
@@ -43,6 +44,7 @@
         android:layout_marginBottom="5sp"
         android:layout_weight="9"
         android:background="@drawable/itemlist_button"
-        android:text="담기"></Button>
+        android:text="냉장고\n넣기"
+        android:textSize="12sp"></Button>
 
 </LinearLayout>

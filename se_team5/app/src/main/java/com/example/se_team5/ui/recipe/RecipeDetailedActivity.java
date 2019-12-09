@@ -125,7 +125,7 @@ public class RecipeDetailedActivity extends AppCompatActivity {
 
                     // recipe credit 정보 받아오기
                     int likes = resObj.getInt("like");
-                    like_button.setText("👍 "+ likes);
+                    like_button.setText("❤️ "+ likes);
 
                     SharedPreferences sp = getSharedPreferences("userFile", MODE_PRIVATE);
                     AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
@@ -181,7 +181,7 @@ public class RecipeDetailedActivity extends AppCompatActivity {
 
                     // 버튼 상태 변경
                     like_button.setPressed(myaction);
-                    like_button.setText("👍 "+ likes);
+                    like_button.setText("❤️ "+ likes);
                     liked = myaction;
                 }
 

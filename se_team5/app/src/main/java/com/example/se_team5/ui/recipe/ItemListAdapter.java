@@ -106,6 +106,7 @@ public class ItemListAdapter extends RecyclerView.Adapter {
                 try {
                     if (response.equals("")) return;
                     if (response.substring(0, 3).equals("200")) {
+                        goBasket.setPressed(true);
                         goBasket.setEnabled(false);
                     }
 
