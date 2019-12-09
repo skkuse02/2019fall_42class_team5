@@ -1,15 +1,8 @@
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-    host     : '115.145.227.249',
-    user     : 'seteam5',
-    password : 'se55555',
-    port     : 3306,
-    database : 'seteam5'
-  });
-
-connection.connect();
+// connect with database
+var connection = require('./db');
 
 exports.register = function (req, res) {
+    console.log("Register");
     console.log("req", req);
 
     var users = {
@@ -43,15 +36,10 @@ exports.register = function (req, res) {
 
 
 exports.login = function (req, res) {
-
-
+    console.log("Login");
     console.log("req", req.body);
     var user_id = req.body.username;
     var user_password = req.body.password;
-
-    console.log(user_id);
-    console.log(user_password);
-
 
     connection.query('SELECT * FROM user WHERE user_id = ?', [user_id],
     function( error, rows, fields) {
@@ -59,7 +47,6 @@ exports.login = function (req, res) {
             console.log("error ocurred", error);
             res.status(400).send('Database error').end();
         } else {
-            console.log('The solution is: ', rows);
             if(rows.length > 0) {
               if(rows[0].user_password == user_password) {
                   res.sendStatus(200).end();

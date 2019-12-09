@@ -1,16 +1,9 @@
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-    host     : '115.145.227.249',
-    user     : 'seteam5',
-    password : 'se55555',
-    port     : 3306,
-    database : 'seteam5'
-  });
-
-connection.connect();
+// connect with database
+var connection = require('./db');
 
 // like
 exports.recipe_credit = function (req, res) {
+  console.log("Recipe Credit");
   var username = req.query.username;
   var recipe_id = req.query.recipe_id;
 
