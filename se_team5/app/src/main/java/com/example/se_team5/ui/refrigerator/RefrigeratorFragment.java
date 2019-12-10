@@ -1,11 +1,9 @@
 package com.example.se_team5.ui.refrigerator;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +20,6 @@ import com.example.se_team5.HttpRequest;
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.PutActivity;
 import com.example.se_team5.R;
-import com.example.se_team5.ItemSelectActivity;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemsAdapter;
 

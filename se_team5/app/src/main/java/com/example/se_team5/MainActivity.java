@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            /*로컬에 아이템관련 정보 저장*/
+            /* 로컬에 아이템관련 정보 저장 */
             SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             try {

@@ -1,6 +1,5 @@
 package com.example.se_team5;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -22,11 +21,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
+/* 모든 아이템 리스트에서 일부를 선택하여 냉장고 혹은 장바구니에 추가하도록 하는 액티비티 */
 public class PutActivity extends AppCompatActivity {
-    /*모든 아이템 리스트에서 일부를 선택하여 냉장고 혹은 장바구니에 추가하도록 하는 액티비티*/
 
     private RecyclerView recyclerView;  //리사이클러 뷰 선언
     private ItemsAdapter myAdapter;     //어댑터 선언
@@ -58,7 +56,7 @@ public class PutActivity extends AppCompatActivity {
             PutButton.setText("냉장고에 추가");
         }
 
-        /*리사이클러 뷰 및 매니저, 어댑터를 지정*/
+        /* 리사이클러 뷰 및 매니저, 어댑터를 지정 */
         recyclerView = findViewById(R.id.putRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(this, 5);
         recyclerView.setLayoutManager(manager); // LayoutManager 등록
@@ -87,10 +85,10 @@ public class PutActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    /*서버에 요청*/
+                    // 서버에 요청
                     new putItems(PutActivity.this).execute(url, postData.toString());
 
-                    /*요청후 putActivity 를 불러온 context 가 정보를 불러올 수 있도록 아이템 리스트 최신화*/
+                    // 요청후 putActivity 를 불러온 context 가 정보를 불러올 수 있도록 아이템 리스트 최신화
                     Intent intent = getIntent();
                     to = intent.getExtras().getInt("to");
                     if(to==1){
@@ -103,9 +101,8 @@ public class PutActivity extends AppCompatActivity {
             }
         });
     }
-
+    /* 추가하는 아이템 리스트를 서버에 송신하는 method */
     private class putItems extends AsyncTask<String, Void, String> {
-        /* 추가하는 아이템 리스트를 서버에 송신하는 class */
 
         private WeakReference<PutActivity> activityReference;
         putItems(PutActivity context) {

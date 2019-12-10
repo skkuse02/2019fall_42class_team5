@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.se_team5.BrowseActivity">
+    tools:context="com.example.se_team5.ui.basket.BrowseActivity">
 
     <ListView
         android:id="@+id/memo"

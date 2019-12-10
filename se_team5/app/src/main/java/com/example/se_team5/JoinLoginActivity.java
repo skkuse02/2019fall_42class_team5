@@ -16,6 +16,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
+/* 앱 실행시 처음으로 보이는 로그인 화면 */
 public class JoinLoginActivity extends AppCompatActivity {
 
     private String user_id;
@@ -32,13 +33,13 @@ public class JoinLoginActivity extends AppCompatActivity {
         Button signinButton = findViewById(R.id.signinButton);
         TextView signupText = findViewById(R.id.signupButton);
 
-        /*로컬에 저장된 로그인 정보 확인*/
+        // 로컬에 저장된 로그인 정보 확인
         SharedPreferences check = getSharedPreferences("userFile", MODE_PRIVATE);
         String pastID = check.getString("username","");
         String pastPW = check.getString("password", null);
 
         if(pastID.length()>0 && pastPW.length()>0){
-            /*저장된 값이 있다면 로그인 시도*/
+            // 저장된 값이 있다면 로그인 시도
             JSONObject postData = new JSONObject();
             try {
                 postData.put("username", pastID);
@@ -105,6 +106,7 @@ public class JoinLoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             HttpRequest req = new HttpRequest(MyGlobal.getData());
+            // POST로 보냄
             return req.sendPost(params[0], params[1]);
         }
 
@@ -113,16 +115,17 @@ public class JoinLoginActivity extends AppCompatActivity {
             JoinLoginActivity activity = activityReference.get();
             if (activity == null || activity.isFinishing()) return;
             if(response==null) return;
-
+            // 응답코드가 200이면
             if (response.substring(0,3).equals("200")) {
-                // 로그인 성공 시, 메인 화면 띄우기
-
+                // 로그인 성공
+                // 자동로그인 위해 sharedpreferences에 저장
                 SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
                 editor.putString("username", user_id);
                 editor.putString("password", user_password);
                 editor.commit();
 
+                // 메인 화면 띄우기
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.putExtra("username", user_id);
                 activity.startActivity(intent);

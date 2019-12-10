@@ -1,4 +1,4 @@
-package com.example.se_team5;
+package com.example.se_team5.ui.refrigerator;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.se_team5.R;
+import com.example.se_team5.ui.recipe.RecommendActivity;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.RecommendItemsAdapter;
 
@@ -80,7 +82,7 @@ public class ItemSelectActivity extends AppCompatActivity {
                     if(good_array.length()==0){/* 선호하는 재료를 하나도 선택하지 않은 경우 알림*/
                         Toast.makeText(getParent(), "좋아하는 재료를 골라주세요", Toast.LENGTH_SHORT).show();
                     }else{
-                        Intent intent = new Intent(ItemSelectActivity.this,RecommendActivity.class);
+                        Intent intent = new Intent(ItemSelectActivity.this, RecommendActivity.class);
                         intent.putExtra("postData",postData.toString());
                         Log.d("Ddd", postData.toString());
                         ItemSelectActivity.this.startActivity(intent);

@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/* 레시피 상세보기에서 조리 과정을 리스트로 뷰에 보여주는 어댑터 */
 public class StepAdapter extends RecyclerView.Adapter {
     private List<Step> stepList; // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
 

@@ -14,7 +14,6 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.se_team5.BrowseActivity;
 import com.example.se_team5.HttpRequest;
 import com.example.se_team5.MyGlobal;
 import com.example.se_team5.PutActivity;
@@ -22,7 +21,6 @@ import com.example.se_team5.R;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemListViewAdapter;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

@@ -51,24 +51,25 @@ public class RecipeFragment extends Fragment {
         recipeInfoAdapter.notifyDataSetChanged();
 
         shimmerRecycler = view.findViewById(R.id.shimmer_recycler_view);
-        shimmerRecycler.hideShimmerAdapter();
 
+        // 기본 화면에서는 로딩화면 숨기기
+        shimmerRecycler.hideShimmerAdapter();
 
         // search button 누른 경우
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 검색 할 키워드가 있다면 검색 요청 보내기
-
                 String search_keyword = recipe_keyword.getText().toString();
                 if (search_keyword.length() == 0) return;
-                // list 초기화
+                // list 초기화후, 정보 업데이트
                 recipe_list.clear();
+                // adapter에 데이터 바뀜을 알려줌
                 recipeInfoAdapter.notifyDataSetChanged();
-
+                // 로딩 화면 보여줌
                 shimmerRecycler.showShimmerAdapter();
-                // search_keyword를 보내서 'recipe_main' json list 받아온다.
 
+                // search_keyword를 보내서 'recipe_main' json list 받아온다.
                 new searchRecipe().execute("/recipe/search", "?keyword="+search_keyword);
 
 
@@ -78,10 +79,12 @@ public class RecipeFragment extends Fragment {
         return view;
     }
 
+    /* 레시피 검색 method */
     private class searchRecipe extends AsyncTask<String, Void, String> {
         HttpRequest req = new HttpRequest(MyGlobal.getData());
         @Override
         protected String doInBackground(String... params) {
+            // GET으로 받아오기
             return req.sendGet(params[0], params[1]);
 
         }
@@ -89,10 +92,11 @@ public class RecipeFragment extends Fragment {
         protected void onPostExecute(String response) {
             super.onPostExecute(response);
             try {
-
                 if(response.equals("")) return;
+                // 응답 코드가 200이면
                 if (response.substring(0, 3).equals("200")) {
                     JSONObject jObject = new JSONObject(response.substring(3));
+                    // RecipeInfo 정보들이 담긴 JSON 리스트 받기
                     JSONArray recipe_main = jObject.getJSONArray("recipe_main");
                     int length = recipe_main.length();
 
@@ -104,7 +108,9 @@ public class RecipeFragment extends Fragment {
 
                     }
 
+                    // 어댑터에 데이터가 바뀌었음을 알려줌
                     recipeInfoAdapter.notifyDataSetChanged();
+                    // 로딩화면을 숨김
                     shimmerRecycler.hideShimmerAdapter();
                 }
 

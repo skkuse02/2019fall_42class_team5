@@ -1,6 +1,5 @@
-package com.example.se_team5;
+package com.example.se_team5.ui.basket;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.webkit.WebSettings;
@@ -10,12 +9,9 @@ import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.se_team5.R;
 import com.example.se_team5.item.Item;
 import com.example.se_team5.item.ItemListViewAdapter;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
