@@ -35,11 +35,11 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
-
 public class RefrigeratorFragment extends Fragment{
+    /*사용자의 냉장고를 보여주는 fragment*/
 
-    private static ArrayList<Item> ITEM_LIST = new ArrayList<Item>();
-    private RecyclerView recyclerView;
+    private static ArrayList<Item> ITEM_LIST = new ArrayList<Item>();       //냉장고의 아이템 리스트
+    private RecyclerView recyclerView;      //
     private ItemsAdapter myAdapter;
     private ArrayList<Item> AllItems_;
 
@@ -179,24 +179,6 @@ public class RefrigeratorFragment extends Fragment{
         }
     }
 
-    private ArrayList<Item> jsonParsing(String json) {
-        SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
-        try{
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray ItemArray = jsonObject.getJSONArray("items");
-
-            ArrayList<Item> li = new ArrayList<Item>();
-
-            for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)-1));
-
-            return li;
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     private static class removeItemInRefrigerator extends AsyncTask<String, Void, String> {
 
@@ -227,4 +209,26 @@ public class RefrigeratorFragment extends Fragment{
             }
         }
     }
+
+    private ArrayList<Item> jsonParsing(String json) {
+        /*수신한 JSON을 Item ArrayList로 파싱하는 메소드*/
+
+        SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
+        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
+        try{
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray ItemArray = jsonObject.getJSONArray("items");
+
+            ArrayList<Item> li = new ArrayList<Item>();
+
+            for(int i=0; i<ItemArray.length(); i++)
+                li.add(AllItems_.get((int)ItemArray.get(i)-1));
+
+            return li;
+        }catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

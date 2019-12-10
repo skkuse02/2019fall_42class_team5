@@ -31,14 +31,14 @@ import java.util.ArrayList;
 import static android.content.Context.MODE_PRIVATE;
 
 public class BasketFragment extends Fragment {
+    /*장바구니화면을 구성하는 fragment*/
 
-    private static ArrayList<Item> ITEM_LIST = new ArrayList<Item>();
+    private static ArrayList<Item> ITEM_LIST = new ArrayList<Item>();   //사용자의 장바구니에 있는 아아템리스트
 
-    ListView listview ;
-    ItemListViewAdapter adapter;
-    private ArrayList<Item> AllItems_;
+    public String user_id;              //사용자의 아이디
 
-    public String user_id;
+    ListView listview ;                 //아이템 리스트를 표현할 리스트 뷰
+    ItemListViewAdapter adapter;        //리스트 뷰를 표현할 어댑터
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_basket, container, false);
@@ -46,34 +46,35 @@ public class BasketFragment extends Fragment {
         Button putButton = root.findViewById(R.id.putBasketButton);
         Button buyButton = root.findViewById(R.id.BuyButton);
 
+        /*유저 아이디를 로컬에서 가져옴*/
         SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         user_id = sp.getString("username","");
 
+        /*리스트 뷰 초기화*/
         listview = root.findViewById(R.id.list_item);
 
+        /*사용자의 장바구니에서 아이템리스트를 요청*/
         new getBasketItemList().execute("/user/basket", "?username="+user_id);
 
 
-        //put
+        /*putButton*/
         putButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+                /*장바구니에 추가함을 명시하여 putActivity를 실행*/
                 Intent intent = new Intent(getActivity().getApplicationContext(), PutActivity.class);
                 intent.putExtra("to", 1);
                 startActivityForResult(intent, 1);
             }
         });
 
-        //buy
+        /*buyButton*/
         buyButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+                /*BrowseActivity를 실행*/
                 Intent intent = new Intent(getActivity().getApplicationContext(), BrowseActivity.class);
                 startActivityForResult(intent, 1);
-
             }
         });
 
@@ -83,18 +84,19 @@ public class BasketFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        /*putActivity 실행 후 사용자 장바구니를 업데이트*/
         if (requestCode == 1) {
             new getBasketItemList().execute("/user/basket", "?username="+user_id);
         }
     }
 
     private class getBasketItemList extends AsyncTask<String, Void, String> {
-
+        /*사용자 장바구니를 업데이트하는 요청을 보내는 class*/
         getBasketItemList() { }
 
         @Override
         protected String doInBackground(String... params) {
+            /*요청을 보낸 후 response를 반환*/
             HttpRequest req = new HttpRequest(MyGlobal.getData());
             return req.sendGet(params[0], params[1]);
         }
@@ -105,6 +107,7 @@ public class BasketFragment extends Fragment {
             if(response==null) return;
 
             if (response.substring(0,3).equals("200")) {
+                /*200을 수신하면 장바구니를 업데이트하고 화면에 표시*/
                 try {
                     JSONObject jsonObject = new JSONObject(response.substring(3));
                     SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
@@ -127,6 +130,8 @@ public class BasketFragment extends Fragment {
     }
 
     private ArrayList<Item> jsonParsing(String json) {
+        /*수신한 JSON을 Item ArrayList로 파싱하는 메소드*/
+
         SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
         ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
         try{
