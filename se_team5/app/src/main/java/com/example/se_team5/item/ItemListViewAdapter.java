@@ -203,7 +203,7 @@ public class ItemListViewAdapter extends BaseAdapter {
                 }
 
                 SharedPreferences pref = mActivity.getSharedPreferences("userFile", MODE_PRIVATE);
-                myBasketList = jsonParsing(pref.getString("userBasket",""));
+                myBasketList = Item.jsonParsing(mActivity, pref.getString("userBasket",""));
 
                 /*표시되는 뷰를 초기화*/
                 notifyDataSetChanged();
@@ -216,26 +216,5 @@ public class ItemListViewAdapter extends BaseAdapter {
                 return;
             }
         }
-    }
-
-    private ArrayList<Item> jsonParsing(String json) {
-        /*수신한 JSON을 Item ArrayList로 파싱하는 메소드*/
-
-        SharedPreferences sp = mActivity.getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
-        try{
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray ItemArray = jsonObject.getJSONArray("items");
-
-            ArrayList<Item> li = new ArrayList<Item>();
-
-            for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)-1));
-
-            return li;
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

@@ -21,30 +21,31 @@ import java.util.ArrayList;
 
 
 public class BrowseActivity extends AppCompatActivity {
-    private WebView mWebView; // 웹뷰 선언
-    private WebSettings mWebSettings; //웹뷰세팅
-    private ArrayList<Item> ITEM_LIST;
-    private ArrayList<Item> AllItems_;
+    private WebView mWebView;             // 웹뷰 선언
+    private WebSettings mWebSettings;    // 웹뷰 세팅
+    private ArrayList<Item> ITEM_LIST;   // 사용자의 장바구니에 있는 아이템 리스트
 
-
-    ListView listview ;
-    ItemListViewAdapter adapter;
+    ListView listview ;             // 리스트 뷰 선언
+    ItemListViewAdapter adapter;    // 리스트 뷰 어댑터 선언
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
 
+        /*로컬에서 사용자 장바구니에 있는 아이템 리스트를 불러와 초기화*/
         SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
-        AllItems_ = Item.gsonParsing(pref.getString("allItems",""));
-        ITEM_LIST = jsonParsing(pref.getString("userBasket",""));
+        ITEM_LIST = Item.jsonParsing(this, pref.getString("userBasket",""));
 
+        /*리스트 뷰와 어댑터를 지정*/
         listview = findViewById(R.id.memo);
         adapter = new ItemListViewAdapter(ITEM_LIST, this) ;
         listview.setAdapter(adapter);
 
+        /*웹뷰를 지정*/
         mWebView = findViewById(R.id.webView);
 
+        /*웹뷰에 대한 세팅 설정*/
         mWebView.setWebViewClient(new WebViewClient());
         mWebSettings = mWebView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
@@ -58,25 +59,7 @@ public class BrowseActivity extends AppCompatActivity {
         mWebSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         mWebSettings.setDomStorageEnabled(true);
 
+        /*웹뷰로 브라우징 할 url 설정*/
         mWebView.loadUrl("https://www.kurly.com");
-    }
-
-    private ArrayList<Item> jsonParsing(String json) {
-        SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
-        try{
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray ItemArray = jsonObject.getJSONArray("items");
-
-            ArrayList<Item> li = new ArrayList<Item>();
-
-            for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)-1));
-
-            return li;
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

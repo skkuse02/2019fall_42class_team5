@@ -43,44 +43,6 @@ public class RecommendItemsAdapter extends RecyclerView.Adapter<RecommendItemsAd
             super(itemView);
             img = itemView.findViewById(R.id.item_image);
             name = itemView.findViewById(R.id.item_name);
-
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    /*한번 클릭된 아이템은 주황색, 두번 클릭된 아이템은 하늘색, 세번 클릭된 아이템은 흰색으로 표현
-                    * 각 클릭에 대하여 선택된 아이템을 객체에 반영한다.*/
-                    if (mSelectedItems1.get(position, false) == false && mSelectedItems2.get(position, false) == false) {
-                        mSelectedItems1.put(position, true);
-                        v.setBackgroundColor(Color.rgb(255,204,153));
-                        //notifyItemChanged(position);
-                    }else if (mSelectedItems1.get(position, false) == true && mSelectedItems2.get(position, false) == false) {
-                        mSelectedItems1.delete(position);
-                        mSelectedItems2.put(position, true);
-                        v.setBackgroundColor(Color.rgb(153,204,255));
-                        //notifyItemChanged(position);
-                    } else if(mSelectedItems2.get(position, false) == true && mSelectedItems1.get(position, false) == false) {
-                        mSelectedItems2.delete(position);
-                        v.setBackgroundColor(Color.WHITE);
-                        // notifyItemChanged(position);
-                    }else{
-                        mSelectedItems1.delete(position);
-                        mSelectedItems2.delete(position);
-                        v.setBackgroundColor(Color.WHITE);
-                    }
-                }
-            });
-
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mLongListener.onItemLongSelected(v, getAdapterPosition());
-                    return false;
-                }
-            });
-
         }
     }
 
@@ -100,10 +62,35 @@ public class RecommendItemsAdapter extends RecyclerView.Adapter<RecommendItemsAd
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position)
+    public void onBindViewHolder(ViewHolder viewHolder, final int position)
     {
         viewHolder.img.setImageResource(myDataList.get(position).getImageResourceID());
         viewHolder.name.setText(myDataList.get(position).getName());
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            /*클릭 시 해당 아이템을 선택된 아이템에 반영*/
+            @Override
+            public void onClick(View view) {
+                if (mSelectedItems1.get(position, false) == false && mSelectedItems2.get(position, false) == false) {
+                    mSelectedItems1.put(position, true);
+                }else if (mSelectedItems1.get(position, false) == true && mSelectedItems2.get(position, false) == false) {
+                    mSelectedItems1.delete(position);
+                    mSelectedItems2.put(position, true);
+                } else if(mSelectedItems2.get(position, false) == true && mSelectedItems1.get(position, false) == false) {
+                    mSelectedItems2.delete(position);
+                }
+                notifyDataSetChanged();
+            }
+        });
+
+        /*선택된 아이템들의 색을 지정*/
+        if(mSelectedItems1.get(position, false) == true){
+            viewHolder.itemView.setBackgroundColor(Color.rgb(255,204,153));
+        }else if(mSelectedItems2.get(position, false) == true){
+            viewHolder.itemView.setBackgroundColor(Color.rgb(153,204,255));
+        }else{
+            viewHolder.itemView.setBackgroundColor(Color.rgb(255,255,255));
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
 
     private ArrayList<Item> myDataList;         //뷰로 전환할 아이템 리스트
     private SparseBooleanArray mSelectedItems = new SparseBooleanArray(0);  //선택된 아이템의 포지션을 저장할 객체
+    int index = -1;
 
     public interface OnListItemLongSelectedInterface {
         void onItemLongSelected(View v, int position);
@@ -40,32 +41,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
             super(itemView);
             img = itemView.findViewById(R.id.item_image);
             name = itemView.findViewById(R.id.item_name);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                /*뷰가 클릭되면 selectedItem에 추가하고 색을 변화한다.*/
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-
-                    if (mSelectedItems.get(position, false) == false) {
-                        mSelectedItems.put(position, true);
-
-                        v.setBackgroundColor(Color.rgb(255,204,153));
-                    } else {
-                        mSelectedItems.delete(position);
-                        v.setBackgroundColor(Color.rgb(255,255,255));
-                    }
-                }
-            });
-
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    mLongListener.onItemLongSelected(v, getAdapterPosition());
-                    return false;
-                }
-            });
-
         }
     }
 
@@ -87,11 +62,31 @@ public class ItemsAdapter extends RecyclerView.Adapter<ItemsAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position)
+    public void onBindViewHolder(ViewHolder viewHolder, final int position)
     {
         /*뷰에 이미지와 텍스트를 지정*/
         viewHolder.img.setImageResource(myDataList.get(position).getImageResourceID());
         viewHolder.name.setText(myDataList.get(position).getName());
+
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            /*클릭 시 해당 아이템을 선택된 아이템에 반영*/
+            @Override
+            public void onClick(View view) {
+                if(mSelectedItems.get(position, false) == true){
+                    mSelectedItems.delete(position);
+                }else if(mSelectedItems.get(position, false) == false){
+                    mSelectedItems.put(position, true);
+                }
+                notifyDataSetChanged();
+            }
+        });
+
+        /*선택된 아이템들의 색을 지정*/
+        if(mSelectedItems.get(position, false) == true){
+            viewHolder.itemView.setBackgroundColor(Color.rgb(255,204,153));
+        }else if(mSelectedItems.get(position, false) == false){
+            viewHolder.itemView.setBackgroundColor(Color.rgb(255,255,255));
+        }
     }
 
     @Override

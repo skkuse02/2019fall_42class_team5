@@ -120,33 +120,12 @@ public class BasketFragment extends Fragment {
                 }
 
                 SharedPreferences pref = getActivity().getSharedPreferences("userFile", MODE_PRIVATE);
-                ITEM_LIST = jsonParsing(pref.getString("userBasket",""));
+                ITEM_LIST = Item.jsonParsing(getActivity(), pref.getString("userBasket",""));
                 adapter = new ItemListViewAdapter(ITEM_LIST, getActivity());
                 listview.setAdapter(adapter);
             } else {
                 return;
             }
         }
-    }
-
-    private ArrayList<Item> jsonParsing(String json) {
-        /*수신한 JSON을 Item ArrayList로 파싱하는 메소드*/
-
-        SharedPreferences sp = getActivity().getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
-        try{
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray ItemArray = jsonObject.getJSONArray("items");
-
-            ArrayList<Item> li = new ArrayList<Item>();
-
-            for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)-1));
-
-            return li;
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

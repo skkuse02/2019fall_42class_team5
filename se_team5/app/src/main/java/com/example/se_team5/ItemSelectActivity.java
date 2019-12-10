@@ -25,32 +25,38 @@ import java.util.ArrayList;
 
 public class ItemSelectActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecommendItemsAdapter myAdapter;
-    private ArrayList<Item> ITEM_LIST;
+    private RecyclerView recyclerView;          //리사이클러 뷰 선언
+    private RecommendItemsAdapter myAdapter;    //뷰 어댑터 선언
+    private ArrayList<Item> ITEM_LIST;          //사용자의 냉장고에 있는 아이템 리스트를 저장할 객체 선언
 
-    private String user_id;
+    private String user_id;     //사용자 아이디 선언
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /*추천 기능활용을 위해 선호하는 아이템, 비호하는 아이템을 선택하는 액티비티이다. */
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recommend);
 
+        /* 로컬에서 사용자 아이디와 냉장고에 있는 아이템 리스트를 불러옴*/
         SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        ITEM_LIST = jsonParsing(sp.getString("userRefrigerator",""));
+        ITEM_LIST = Item.jsonParsing(this, sp.getString("userRefrigerator",""));
         user_id = sp.getString("username","");
 
+        /*추천 버튼 선언*/
         Button recommendButton = findViewById(R.id.recommendButton);
 
+        /*리사이클러 뷰 및 매니저, 어댑터를 지정*/
         recyclerView = findViewById(R.id.recommendRecyclerView);
         GridLayoutManager manager = new GridLayoutManager(this, 5);
         recyclerView.setLayoutManager(manager); // LayoutManager 등록
-
         myAdapter = new RecommendItemsAdapter(ITEM_LIST);
         recyclerView.setAdapter(myAdapter);  // Adapter 등록
+
         recommendButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                /*추천버튼 클릭시 선호, 비호하는 아이템을 JSON으로 변환하여 송신한다. */
+
                 JSONObject postData = new JSONObject();
                 try {
                     postData.put("username",user_id);
@@ -71,7 +77,7 @@ public class ItemSelectActivity extends AppCompatActivity {
                     }
                     postData.put("bad", bad_array);
 
-                    if(good_array.length()==0){
+                    if(good_array.length()==0){/* 선호하는 재료를 하나도 선택하지 않은 경우 알림*/
                         Toast.makeText(getParent(), "좋아하는 재료를 골라주세요", Toast.LENGTH_SHORT).show();
                     }else{
                         Intent intent = new Intent(ItemSelectActivity.this,RecommendActivity.class);
@@ -87,24 +93,5 @@ public class ItemSelectActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private ArrayList<Item> jsonParsing(String json) {
-        SharedPreferences sp = getSharedPreferences("userFile", Context.MODE_PRIVATE);
-        ArrayList<Item> AllItems_ = Item.gsonParsing(sp.getString("allItems",""));
-        try{
-            JSONObject jsonObject = new JSONObject(json);
-            JSONArray ItemArray = jsonObject.getJSONArray("items");
-
-            ArrayList<Item> li = new ArrayList<Item>();
-
-            for(int i=0; i<ItemArray.length(); i++)
-                li.add(AllItems_.get((int)ItemArray.get(i)-1));
-
-            return li;
-        }catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
