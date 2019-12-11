@@ -1,7 +1,7 @@
 // connect with database
 var connection = require('./db');
 
-//이용자가 레시피를 검색하면, db에서 일치하는 레시피들을 찾아서 대략적인 정보를 어플에 보내준다.
+// When user request reciep search with keyword
 exports.recipe_search = function (req, res) {
   console.log("Search Recipe");
   var recipeList = new Array(); // recipe 정보 목록
@@ -14,8 +14,8 @@ exports.recipe_search = function (req, res) {
     }
     else {
       for(var i=0;i<rows.length;i++){
-        var recipe = new Object(); // 개별 레시피 정보
-        var items = new Array();
+        var recipe = new Object(); // each recipe's info.
+        var items = new Array(); // array of recipes
         for(var key in rows[i]){
           switch(key){
             case "recipe_id" :
@@ -31,17 +31,17 @@ exports.recipe_search = function (req, res) {
               recipe.like = rows[i][key];
               break;
             case "item1" :
-              if(rows[i][key]) {
+              if(rows[i][key]) { // not 0 (=없음)
                 items.push(rows[i][key]);
               }
               break;
             case "item2" :
-              if(rows[i][key]) {
+              if(rows[i][key]) { // not 0 (=없음)
                 items.push(rows[i][key]);
               }
               break;
             case "item3" :
-              if(rows[i][key]) {
+              if(rows[i][key]) { // not 0 (=없음)
                 items.push(rows[i][key]);
               }
               break;
@@ -62,16 +62,16 @@ exports.recipe_search = function (req, res) {
   });
 }
 
-//이용자가 선택한 재료들을 기반으로, db에서 일치하는 레시피들을 찾아서 대략적인 정보를 어플에 보내준다.
+// Recommend recipes based on selected items by user
 exports.recipe_recommendation = function (req, res) {
   console.log("Recipe recommendation");
   var good = req.body.good;
   for(var i=0;i<good.length;i++){
-    if(good[i] == 69){ // 닭고기
+    if(good[i] == 69){ // include '닭가슴살', '닭다리살' to '닭고기'
       good.push(24);
       good.push(36);
     }
-    if(good[i] == 74){ // 돼지고기
+    if(good[i] == 74){ // include '삼겹살', '돼지앞다리살' to '돼지고기'
       good.push(30);
       good.push(67);
     }
@@ -81,11 +81,11 @@ exports.recipe_recommendation = function (req, res) {
    bad = [0];
   }
   for(var i=0;i<bad.length;i++){
-    if(bad[i] == 69){ // 닭고기
+    if(bad[i] == 69){ // include '닭가슴살', '닭다리살' to '닭고기'
       bad.push(24);
       bad.push(36);
     }
-    if(bad[i] == 74){ // 돼지고기
+    if(bad[i] == 74){ // include '삼겹살', '돼지앞다리살' to '돼지고기'
       bad.push(30);
       bad.push(67);
     }
@@ -101,7 +101,8 @@ exports.recipe_recommendation = function (req, res) {
       res.status(400).send("Database error").end();
     }
     else {
-      if(rows.length){ // 추천 레시피 있는 경우
+      // Exist recipe based on recommendation algorithm
+      if(rows.length){
         var idList = new Array(); // recipe_id list
         var result = new Object(); // final result
         for(var i=0;i<rows.length;i++){
@@ -119,8 +120,8 @@ exports.recipe_recommendation = function (req, res) {
           else {
             var recipeList = new Array();
             for(var i=0;i<rows.length;i++){
-              var recipe = new Object();
-              var items = new Array();
+              var recipe = new Object(); // each recipe's info.
+              var items = new Array(); // array of recipes
               for(var key in rows[i]){
                 switch(key){
                   case "recipe_id" :
@@ -169,7 +170,9 @@ exports.recipe_recommendation = function (req, res) {
           }
         });
       } // end of 우선책
-      else{ // 추천 레시피가 없는 경우
+
+      // No recipe satisfy recommendation algorithm
+      else{
         connection.query('SELECT recipe_id FROM authentic_ingredient WHERE item_id = ?', [good], function(error, rows, fields){
           if(error){
             console.log("error ocurred: ", error);
@@ -193,8 +196,8 @@ exports.recipe_recommendation = function (req, res) {
               else {
                 var recipeList = new Array();
                 for(var i=0;i<rows.length;i++){
-                  var recipe = new Object();
-                  var items = new Array();
+                  var recipe = new Object(); // each recipe's info.
+                  var items = new Array(); // array of recipes
                   for(var key in rows[i]){
                     switch(key){
                       case "recipe_id" :
@@ -250,7 +253,7 @@ exports.recipe_recommendation = function (req, res) {
 }
 
 
-//이용자가 한가지 레시피를 선택 했을 떄, 해당 레시피의 디테일한 정보를 전달한다.
+// Send detail information of selected recipe
 exports.recipe_detail = function (req, res) {
   console.log("Recipe detailed info.");
   // get credit

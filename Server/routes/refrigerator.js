@@ -64,7 +64,7 @@ exports.delete_items = function (req, res){
       res.status(400).send('Database error').end();
     }
     else{
-      if(rows.affectedRow)
+      if(rows.affectedRow) // No deleted rows
         res.status(400).send("Invalid Delete Request").end();
       else
         res.sendStatus(200).end();

@@ -25,7 +25,7 @@ exports.items = function (req, res){
       console.log(info);
       res.status(200).json(info).end();
     }
-  }); // item id 찾는 query
+  });
 }
 
 
@@ -39,16 +39,16 @@ exports.add_items = function (req, res){
     values.push([req.body.username, req.body.items[i]]);
   }
   var str_query = connection.query('INSERT IGNORE INTO cart (user_id, item_id) VALUES ?', [values], function(error, rows, fields) {
-    console.log(str_query.sql);
+    console.log(str_query.sql); // show sql query
     if(error){
       console.log("Error ocurred: ", error);
       res.sendStatus(400).end();
     }
     else {
-      // 정상적으로 insert
+      // insert success
       res.sendStatus(200).end();
     }
-  }); // end of insert query
+  });
 }
 
 
@@ -68,7 +68,7 @@ exports.delete_items = function (req, res){
       res.sendStatus(400).end();
     }
     else{
-      if(rows.affectedRow)
+      if(rows.affectedRow) // No deleted rows
         res.status(400).send("Invalid Delete Request").end();
       else
         res.sendStatus(200).end();
@@ -101,7 +101,7 @@ exports.purchase_items = function (req, res){
             res.sendStatus(400).end();
         }
         else {
-        // 정상적으로 insert
+          // insert success  
           res.sendStatus(200).end();
           }
         }); // end of insert str_query
