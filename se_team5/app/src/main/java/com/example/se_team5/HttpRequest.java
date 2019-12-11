@@ -1,7 +1,5 @@
 package com.example.se_team5;
 
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -109,11 +107,12 @@ public class HttpRequest {
             // response code 입력
             int status = httpURLConnection.getResponseCode();
 
-            response = status + sb.toString();
+            response = status + sb.toString(); // response 문자열은 status + response body로 구성
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // disconnection
             if (httpURLConnection != null) httpURLConnection.disconnect();
         }
         return response;
@@ -126,7 +125,7 @@ public class HttpRequest {
             // server와 연결
             httpURLConnection = (HttpURLConnection) new URL(server+url+params).openConnection();
 
-            // Get 형식으로 json 데이터 보내기
+            // request는 GET이며, json으로 응답 받음
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.setRequestProperty("Accept", "application/json");
             httpURLConnection.setDoInput(true);
@@ -149,12 +148,12 @@ public class HttpRequest {
             br.close();
 
             int status = httpURLConnection.getResponseCode();
-            response = status + sb.toString();
-            Log.i("GET Response",response);
+            response = status + sb.toString(); // response 문자열은 status + response body로 구성
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            // disconnection
             if (httpURLConnection != null) httpURLConnection.disconnect();
         }
 

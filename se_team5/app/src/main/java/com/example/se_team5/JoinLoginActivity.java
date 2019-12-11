@@ -16,9 +16,11 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
+/* 앱 실행시 처음으로 보이는 로그인 화면 */
 public class JoinLoginActivity extends AppCompatActivity {
 
     private String user_id;
+    private String user_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +33,13 @@ public class JoinLoginActivity extends AppCompatActivity {
         Button signinButton = findViewById(R.id.signinButton);
         TextView signupText = findViewById(R.id.signupButton);
 
+        // 로컬에 저장된 로그인 정보 확인
         SharedPreferences check = getSharedPreferences("userFile", MODE_PRIVATE);
         String pastID = check.getString("username","");
         String pastPW = check.getString("password", null);
 
         if(pastID.length()>0 && pastPW.length()>0){
+            // 저장된 값이 있다면 로그인 시도
             JSONObject postData = new JSONObject();
             try {
                 postData.put("username", pastID);
@@ -54,29 +58,19 @@ public class JoinLoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String name = username.getText().toString();
-                String pw = password.getText().toString();
+                user_id = username.getText().toString();
+                user_password = password.getText().toString();
 
                 // 입력 값 없는 것 처리
-                if (name.length() == 0 || pw.length() == 0) return;
+                if (user_id.length() == 0 || user_password.length() == 0) return;
 
                 // JSON으로 로그인 데이터 보냄
                 JSONObject postData = new JSONObject();
                 try {
-                    postData.put("username", username.getText().toString());
-                    postData.put("password", password.getText().toString());
-
-                    user_id = username.getText().toString();
+                    postData.put("username", user_id);
+                    postData.put("password", user_password);
 
                     new sendLoginInfo(JoinLoginActivity.this).execute("/user/login", postData.toString());
-
-
-                    SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("username", username.getText().toString());
-                    editor.putString("password", password.getText().toString());
-                    editor.commit();
-
 
                     // 빈칸으로 바꾸기
                     username.setText("");
@@ -85,7 +79,6 @@ public class JoinLoginActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -113,6 +106,7 @@ public class JoinLoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             HttpRequest req = new HttpRequest(MyGlobal.getData());
+            // POST로 보냄
             return req.sendPost(params[0], params[1]);
         }
 
@@ -121,9 +115,17 @@ public class JoinLoginActivity extends AppCompatActivity {
             JoinLoginActivity activity = activityReference.get();
             if (activity == null || activity.isFinishing()) return;
             if(response==null) return;
-
+            // 응답코드가 200이면
             if (response.substring(0,3).equals("200")) {
-                // 로그인 성공 시, 메인 화면 띄우기
+                // 로그인 성공
+                // 자동로그인 위해 sharedpreferences에 저장
+                SharedPreferences pref = getSharedPreferences("userFile", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("username", user_id);
+                editor.putString("password", user_password);
+                editor.commit();
+
+                // 메인 화면 띄우기
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.putExtra("username", user_id);
                 activity.startActivity(intent);
@@ -131,8 +133,6 @@ public class JoinLoginActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(activity, response.substring(3), Toast.LENGTH_SHORT).show();
             }
-
-
         }
     }
 }

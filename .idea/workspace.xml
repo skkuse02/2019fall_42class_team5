@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eab9bcd5-3ab8-462d-9624-81afa2536025" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/se_team5/app/src/main/java/com/example/se_team5/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/se_team5/app/src/main/java/com/example/se_team5/MainActivity.java" afterDir="false" />
-    </list>
+    <list default="true" id="eab9bcd5-3ab8-462d-9624-81afa2536025" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,12 +13,12 @@
     <option name="delegatedBuild" value="true" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/se_team5/app/src/main/java/com/example/se_team5/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="90">
-              <caret line="28" column="4" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
+              <caret line="28" selection-start-line="28" selection-end-line="28" />
             </state>
           </provider>
         </entry>
@@ -48,80 +46,16 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
+              <item name="SE_" type="b2602c69:ProjectViewProjectNode" />
+              <item name="SE_" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="SE" type="b2602c69:ProjectViewProjectNode" />
-              <item name="SE" type="462c0819:PsiDirectoryNode" />
-              <item name="se_team5" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="example" type="462c0819:PsiDirectoryNode" />
+              <item name="SE_" type="b2602c69:ProjectViewProjectNode" />
+              <item name="SE_" type="462c0819:PsiDirectoryNode" />
               <item name="se_team5" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -129,6 +63,7 @@
         </subPane>
       </pane>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -161,11 +96,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="70" y="27" width="1296" height="741" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info id="Captures" order="0" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.32939324" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.329294" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Image Layers" order="3" />
       <window_info id="Designer" order="4" />
@@ -185,7 +119,7 @@
     <entry file="file://$PROJECT_DIR$/se_team5/app/src/main/java/com/example/se_team5/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
-          <caret line="28" column="4" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
+          <caret line="28" selection-start-line="28" selection-end-line="28" />
         </state>
       </provider>
     </entry>

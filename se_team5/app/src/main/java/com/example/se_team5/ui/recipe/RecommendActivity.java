@@ -1,4 +1,4 @@
-package com.example.se_team5;
+package com.example.se_team5.ui.recipe;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
-import com.example.se_team5.ui.recipe.RecipeInfo;
-import com.example.se_team5.ui.recipe.RecipeInfoAdapter;
+import com.example.se_team5.HttpRequest;
+import com.example.se_team5.MyGlobal;
+import com.example.se_team5.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

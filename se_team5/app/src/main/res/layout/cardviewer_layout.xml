@@ -10,12 +10,14 @@
     android:layout_marginRight="3dp"
     android:layout_marginBottom="3dp"
     android:background="@drawable/item_selector"
+    android:cacheColorHint="@android:color/transparent"
     app:cardCornerRadius="5dp">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:cacheColorHint="@android:color/transparent">
         <androidx.cardview.widget.CardView
             android:id="@+id/cardImage"
             android:layout_width="match_parent"
@@ -25,7 +27,8 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
-            app:cardCornerRadius="30dp">
+            app:cardCornerRadius="30dp"
+            android:cacheColorHint="@android:color/transparent">
 
             <ImageView
                 android:id="@+id/item_image"

@@ -9,14 +9,16 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/* 리스트로 보이는 레시피 간단한 정보 객체 */
 public class RecipeInfo {
-    public Integer recipe_id;
-    public String title;
-    public String imagepath;
-    public List<Integer> items;
-    public Integer like;
-    public String description;
+    public Integer recipe_id; // 레시피 id
+    public String title; // 레시피 제목
+    public String imagepath; // 레시피 메인 이미지 주소
+    public List<Integer> items; // 주요 아이템 리스트
+    public Integer like; // 해당 레시피 추천 수
+    public String description; // 레시피 소개
 
+    /* JSON을 parsing하는 생성자 */
     public RecipeInfo(JSONObject recipe) {
         try {
             recipe_id = recipe.getInt("recipe_id");

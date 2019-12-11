@@ -23,10 +23,11 @@ import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
+/* 레시피 검색 또는 추천 시, RecipeInfo들을 리스트로 뷰에 보여주는 어댑터 */
 public class RecipeInfoAdapter extends RecyclerView.Adapter {
     private Context context; // fragment context
     private List<RecipeInfo> recipeList; // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
-    private ArrayList<Item> AllItems_;
+    private ArrayList<Item> AllItems_; // 아이템 전체 정보 리스트
 
     public RecipeInfoAdapter(Context context,List<RecipeInfo> recipeList) {
         this.context = context;
@@ -101,16 +102,16 @@ public class RecipeInfoAdapter extends RecyclerView.Adapter {
             RecipeInfo thisRecipe = recipeList.get(pos);
 
             // 불러올 activity 생성
-            Intent toRecipe = new Intent(context, RecipeDetailedActivity.class);
+            Intent DetailedRecipe = new Intent(context, RecipeDetailedActivity.class);
 
             // main image uri, title, id 정보 넘기기
-            toRecipe.putExtra("imagepath",thisRecipe.imagepath);
+            DetailedRecipe.putExtra("imagepath",thisRecipe.imagepath);
             Log.i("path",thisRecipe.imagepath);
-            toRecipe.putExtra("title",thisRecipe.title);
-            toRecipe.putExtra("recipe_id",thisRecipe.recipe_id);
+            DetailedRecipe.putExtra("title",thisRecipe.title);
+            DetailedRecipe.putExtra("recipe_id",thisRecipe.recipe_id);
 
-            // activity 시작
-            context.startActivity(toRecipe);
+            // RecipeDetailedActivity 시작
+            context.startActivity(DetailedRecipe);
 
         }
     }
